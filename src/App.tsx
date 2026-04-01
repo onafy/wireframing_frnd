@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Outlet, Link } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
-import HomePage from './pages/home/HomePage'
+import WireframePage from './pages/wireframes'
 
 // Shared layout for all wireframe pages — includes back-to-dashboard link
 function WireframeLayout() {
@@ -24,7 +24,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route element={<WireframeLayout />}>
-          <Route path="/home/:slug" element={<HomePage />} />
+          <Route path="/home/:slug" element={<WireframePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
