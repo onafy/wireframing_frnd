@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, Link, Navigate } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import WireframePage from './pages/wireframes'
 
@@ -22,6 +22,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Redirect root to dashboard */}
+        <Route path="/" element={<Navigate to="/home" replace />} />
         {/* Dashboard — no back link */}
         <Route path="/home" element={<Dashboard />} />
         {/* Wireframe pages — with back-to-dashboard link */}
