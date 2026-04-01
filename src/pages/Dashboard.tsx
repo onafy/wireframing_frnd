@@ -3,7 +3,7 @@ import { Home } from 'lucide-react'
 
 const wireframes = [
   {
-    path: '/home',
+    slug: 'home',
     title: 'Home',
     description: 'frndOS main home page with tools, signals, and recent activity',
     icon: Home,
@@ -30,8 +30,8 @@ export default function Dashboard() {
             const Icon = wf.icon
             return (
               <Link
-                key={wf.path}
-                to={wf.path}
+                key={wf.slug}
+                to={`/home/${wf.slug}`}
                 style={{ textDecoration: 'none' }}
               >
                 <div
