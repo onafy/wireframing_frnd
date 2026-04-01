@@ -784,17 +784,56 @@ export default function HomePage() {
         {/* Main content */}
         <div className="max-w-5xl mx-auto px-8 py-8">
 
-          {/* Cmd+K search bar */}
-          <button
-            onClick={() => setCmdOpen(true)}
-            className="w-full flex items-center gap-3 border border-white/[0.09] rounded-2xl px-4 py-3.5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/15 transition-all mb-8 cursor-text group"
-          >
-            <Search size={15} className="text-white/25 shrink-0" />
-            <span className="flex-1 text-left text-white/25 text-sm">Ask frndOS or type a command...</span>
-            <kbd className="px-2 py-0.5 rounded bg-white/[0.06] text-white/20 text-[11px] font-mono group-hover:bg-white/[0.09] transition-colors">
-              ⌘ K
-            </kbd>
-          </button>
+          {/* Cmd+K — Hero search bar (center of attention) */}
+          <div className="flex flex-col items-center mb-10 pt-4">
+            {/* Heading */}
+            <p className="text-white/20 text-xs uppercase tracking-widest font-medium mb-5">
+              What would you like to do?
+            </p>
+
+            {/* Search pill */}
+            <button
+              onClick={() => setCmdOpen(true)}
+              className="group relative flex items-center gap-4 rounded-2xl px-6 py-4 bg-white/[0.04] border border-white/[0.10] hover:bg-white/[0.07] hover:border-white/[0.18] transition-all cursor-text w-full max-w-2xl shadow-[0_0_40px_rgba(255,255,255,0.04)] hover:shadow-[0_0_60px_rgba(255,255,255,0.07)]"
+            >
+              {/* Glow dot */}
+              <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-[#60a5fa]/10 border border-[#60a5fa]/20">
+                <Sparkles size={15} className="text-[#60a5fa]" />
+              </div>
+
+              <span className="flex-1 text-left text-white/40 text-base group-hover:text-white/50 transition-colors">
+                Ask frndOS or type a command...
+              </span>
+
+              <div className="shrink-0 flex items-center gap-1.5">
+                <kbd className="px-2.5 py-1 rounded-lg bg-white/[0.07] border border-white/[0.10] text-white/30 text-[11px] font-mono group-hover:bg-white/[0.10] group-hover:text-white/40 transition-colors">
+                  ⌘
+                </kbd>
+                <kbd className="px-2.5 py-1 rounded-lg bg-white/[0.07] border border-white/[0.10] text-white/30 text-[11px] font-mono group-hover:bg-white/[0.10] group-hover:text-white/40 transition-colors">
+                  K
+                </kbd>
+              </div>
+            </button>
+
+            {/* Quick chips below */}
+            <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+              {[
+                { label: 'Generate a KV', icon: <FileText size={11} /> },
+                { label: 'Analyze trends', icon: <TrendingUp size={11} /> },
+                { label: 'Create persona', icon: <Users size={11} /> },
+                { label: 'Write a brief', icon: <FileText size={11} /> },
+              ].map((chip) => (
+                <button
+                  key={chip.label}
+                  onClick={() => setCmdOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.07] text-white/30 hover:text-white/60 hover:border-white/[0.14] hover:bg-white/[0.04] text-[11px] transition-all"
+                >
+                  {chip.icon}
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Today's Signal — conditional */}
           {showSignal && <TodaySignalCard signal={MOCK_SIGNAL} />}
@@ -854,14 +893,14 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Right — Chat CTA */}
+            {/* Right — Cmd+K primary CTA */}
             <button
               onClick={() => setCmdOpen(true)}
-              className="flex items-center gap-2 shrink-0 text-white/60 hover:text-white/90 transition-colors"
+              className="flex items-center gap-2 shrink-0 bg-white/[0.08] hover:bg-white/[0.13] border border-white/[0.12] hover:border-white/[0.20] rounded-xl px-3.5 py-1.5 text-white/70 hover:text-white transition-all"
             >
-              <Sparkles size={13} className="text-[#60a5fa]" />
-              <span className="text-xs font-medium">Chat</span>
-              <kbd className="px-1.5 py-0.5 rounded bg-white/[0.07] text-white/20 text-[10px] font-mono">⌘ K</kbd>
+              <Sparkles size={12} className="text-[#60a5fa]" />
+              <span className="text-xs font-medium">Ask FRnD</span>
+              <kbd className="px-1.5 py-0.5 rounded bg-white/[0.07] text-white/25 text-[10px] font-mono">⌘K</kbd>
             </button>
           </div>
         </nav>
