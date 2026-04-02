@@ -688,10 +688,10 @@ export default function HomePage() {
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors ${
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                   activeFilter === cat
-                    ? 'bg-white/10 text-white/70'
-                    : 'text-white/25 hover:text-white/50'
+                    ? 'border-[#343434] bg-[#1f1f1f] text-[#e8e8e8]'
+                    : 'border-[#262626] bg-transparent text-white/35 hover:border-[#343434] hover:text-white/60'
                 }`}
               >
                 {cat}
