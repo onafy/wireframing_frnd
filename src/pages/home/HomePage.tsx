@@ -398,12 +398,6 @@ const MOCK_YOUR_TOOLS: YourTool[] = [
   { id: 'kv-gen', name: 'Generative AI', pillar: 'Growth', icon: <Sparkles size={16} />, description: 'Assisted asset generation and creative prompt engineering workspace.', status: 'soon' },
 ]
 
-const MOCK_TRENDING: TrendingTool[] = [
-  { rank: 1, name: 'Viral TikTok Trend Analyzer', description: 'Identify and ride trending audio and formats on TikTok', icon: <Video size={14} /> },
-  { rank: 2, name: 'Gen-Z Slang Translator', description: 'Translate brand messaging into Gen-Z native language', icon: <MessageSquare size={14} /> },
-  { rank: 3, name: 'Pitch Deck Outliner', description: 'Generate strategic deck structures from brief inputs', icon: <FileText size={14} /> },
-]
-
 const MOCK_MEETINGS: Meeting[] = [
   { id: 'm1', time: '11:00 AM', title: 'Valentine Campaign Prep', brand: 'Ultra Milk', attendees: 4, hasLink: true, status: 'upcoming', startsInMin: 21 },
   { id: 'm2', time: '02:00 PM', title: 'OCBC Quarterly Review', brand: 'Bank OCBC', attendees: 6, hasLink: true, status: 'future' },
@@ -454,40 +448,40 @@ interface ForYouData {
 }
 
 // ── For You Section Mock Data ──────────────────────────────────────
-const MOCK_FOR_YOU: ForYouData = {
-  dailyFocus: {
-    message: "Ultra Milk guardrails at 72% — review flagged assets before the Valentine campaign deadline.",
-    type: 'urgent',
-  },
-  announcements: [
-    {
-      id: 'ann1',
-      badge: 'New',
-      title: 'Trendseeker now supports audio trend analysis for TikTok',
-      description: 'Detect trending sounds and music clips directly from your dashboard.',
-      date: '2026-04-05',
-      readTime: '2 min read',
-    },
-    {
-      id: 'ann2',
-      badge: 'Update',
-      title: 'Brand Guardrails v2 — 40% faster scanning',
-      description: 'New incremental scan mode reduces re-check time from 3 minutes to under 90 seconds.',
-      date: '2026-04-03',
-    },
-    {
-      id: 'ann3',
-      badge: 'Update',
-      title: 'Canvas export now supports 8K resolution',
-      description: 'Export creatives at up to 7680 × 4320 for high-res campaign materials.',
-      date: '2026-04-01',
-    },
-  ],
-  weeklySummary: {
-    assetsCreated: 19,
-    brands: 6,
-  },
-}
+// const MOCK_FOR_YOU: ForYouData = {
+//   dailyFocus: {
+//     message: "Ultra Milk guardrails at 72% — review flagged assets before the Valentine campaign deadline.",
+//     type: 'urgent',
+//   },
+//   announcements: [
+//     {
+//       id: 'ann1',
+//       badge: 'New',
+//       title: 'Trendseeker now supports audio trend analysis for TikTok',
+//       description: 'Detect trending sounds and music clips directly from your dashboard.',
+//       date: '2026-04-05',
+//       readTime: '2 min read',
+//     },
+//     {
+//       id: 'ann2',
+//       badge: 'Update',
+//       title: 'Brand Guardrails v2 — 40% faster scanning',
+//       description: 'New incremental scan mode reduces re-check time from 3 minutes to under 90 seconds.',
+//       date: '2026-04-03',
+//     },
+//     {
+//       id: 'ann3',
+//       badge: 'Update',
+//       title: 'Canvas export now supports 8K resolution',
+//       description: 'Export creatives at up to 7680 × 4320 for high-res campaign materials.',
+//       date: '2026-04-01',
+//     },
+//   ],
+//   weeklySummary: {
+//     assetsCreated: 19,
+//     brands: 6,
+//   },
+// }
 
 // Brand-assigned recent work (State B2 — Fresh Brand, zero data)
 const MOCK_RECENT_B: RecentItem[] = [
@@ -1540,150 +1534,125 @@ function YourToolsStrip({ tools }: { tools: YourTool[] }) {
   )
 }
 
-// ── Trending Feed ───────────────────────────────────────────────────
-function TrendingFeed({ tools }: { tools: TrendingTool[] }) {
-  return (
-    <div className="border border-white/[0.06] rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-        <span className="text-white/70 text-xs font-semibold">Trending in frndOS</span>
-        <span className="text-[9px] text-white/20 uppercase tracking-widest font-medium">Agency Wide</span>
-      </div>
-      {tools.map((tool) => (
-        <button
-          key={tool.rank}
-          className="w-full flex items-center gap-3 px-4 py-3 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.04] transition-colors text-left"
-        >
-          <span className="text-[11px] text-white/15 font-mono w-4 shrink-0">{tool.rank}</span>
-          <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/35 shrink-0">
-            {tool.icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white/75 text-xs font-medium truncate">{tool.name}</p>
-            <p className="text-white/25 text-[10px] truncate mt-0.5">{tool.description}</p>
-          </div>
-        </button>
-      ))}
-    </div>
-  )
-}
+
 
 // ── For You Section (9.K) ───────────────────────────────────────
-function ForYouSection({ data }: { data: ForYouData }) {
-  return (
-    <div className="mb-6">
-      {/* Section label */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-white/25 text-[11px] uppercase tracking-widest font-medium">For You</span>
-      </div>
+// function ForYouSection({ data }: { data: ForYouData }) {
+//   return (
+//     <div className="mb-6">
+//       {/* Section label */}
+//       <div className="flex items-center justify-between mb-4">
+//         <span className="text-white/25 text-[11px] uppercase tracking-widest font-medium">For You</span>
+//       </div>
 
-      <div className="space-y-4">
-        {/* Daily Focus */}
-        <div className={`border rounded-2xl p-4 flex items-start gap-4 ${
-          data.dailyFocus.type === 'urgent'
-            ? 'border-red-500/20 bg-red-500/5'
-            : data.dailyFocus.type === 'caught-up'
-            ? 'border-green-500/20 bg-green-500/5'
-            : 'border-white/[0.08] bg-white/[0.02]'
-        }`}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
-            data.dailyFocus.type === 'urgent'
-              ? 'bg-red-500/20'
-              : data.dailyFocus.type === 'caught-up'
-              ? 'bg-green-500/20'
-              : 'bg-white/5'
-          }`}>
-            {data.dailyFocus.type === 'urgent' ? (
-              <AlertTriangle size={13} className="text-red-400" />
-            ) : data.dailyFocus.type === 'caught-up' ? (
-              <CheckCircle2 size={13} className="text-green-400" />
-            ) : (
-              <Sparkles size={13} className="text-white/40" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white/80 text-xs font-medium leading-relaxed">{data.dailyFocus.message}</p>
-            <div className="flex items-center gap-2 mt-1.5">
-              {data.dailyFocus.type === 'urgent' && (
-                <span className="text-[10px] text-red-400/70 font-medium">Needs attention</span>
-              )}
-              {data.dailyFocus.type === 'caught-up' && (
-                <span className="text-[10px] text-green-400/70 font-medium">All caught up</span>
-              )}
-              {data.dailyFocus.type === 'normal' && (
-                <span className="text-[10px] text-white/30 font-medium">Daily focus</span>
-              )}
-            </div>
-          </div>
-        </div>
+//       <div className="space-y-4">
+//         {/* Daily Focus */}
+//         <div className={`border rounded-2xl p-4 flex items-start gap-4 ${
+//           data.dailyFocus.type === 'urgent'
+//             ? 'border-red-500/20 bg-red-500/5'
+//             : data.dailyFocus.type === 'caught-up'
+//             ? 'border-green-500/20 bg-green-500/5'
+//             : 'border-white/[0.08] bg-white/[0.02]'
+//         }`}>
+//           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+//             data.dailyFocus.type === 'urgent'
+//               ? 'bg-red-500/20'
+//               : data.dailyFocus.type === 'caught-up'
+//               ? 'bg-green-500/20'
+//               : 'bg-white/5'
+//           }`}>
+//             {data.dailyFocus.type === 'urgent' ? (
+//               <AlertTriangle size={13} className="text-red-400" />
+//             ) : data.dailyFocus.type === 'caught-up' ? (
+//               <CheckCircle2 size={13} className="text-green-400" />
+//             ) : (
+//               <Sparkles size={13} className="text-white/40" />
+//             )}
+//           </div>
+//           <div className="flex-1 min-w-0">
+//             <p className="text-white/80 text-xs font-medium leading-relaxed">{data.dailyFocus.message}</p>
+//             <div className="flex items-center gap-2 mt-1.5">
+//               {data.dailyFocus.type === 'urgent' && (
+//                 <span className="text-[10px] text-red-400/70 font-medium">Needs attention</span>
+//               )}
+//               {data.dailyFocus.type === 'caught-up' && (
+//                 <span className="text-[10px] text-green-400/70 font-medium">All caught up</span>
+//               )}
+//               {data.dailyFocus.type === 'normal' && (
+//                 <span className="text-[10px] text-white/30 font-medium">Daily focus</span>
+//               )}
+//             </div>
+//           </div>
+//         </div>
 
-        {/* Announcements — blog-card style */}
-        {data.announcements.length > 0 && (
-          <div className="border border-white/[0.06] rounded-2xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-white/[0.06]">
-              <span className="text-white/70 text-xs font-semibold">What's New</span>
-            </div>
-            {data.announcements.map((ann, i) => (
-              <div
-                key={ann.id}
-                className={`px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors group ${
-                  i < data.announcements.length - 1 ? 'border-b border-white/[0.04]' : ''
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    {ann.badge && (
-                      <span className={`inline-block text-[9px] font-semibold px-1.5 py-0.5 rounded mb-1.5 ${
-                        ann.badge === 'New'
-                          ? 'bg-blue-500/20 text-blue-400'
-                          : ann.badge === 'Breaking'
-                          ? 'bg-red-500/20 text-red-400'
-                          : 'bg-white/10 text-white/40'
-                      }`}>
-                        {ann.badge}
-                      </span>
-                    )}
-                    <p className="text-white/75 text-xs font-medium leading-snug group-hover:text-white/90 transition-colors">
-                      {ann.title}
-                    </p>
-                    <p className="text-white/30 text-[10px] mt-1 leading-relaxed line-clamp-2">
-                      {ann.description}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[10px] text-white/20">{ann.date}</span>
-                      {ann.readTime && (
-                        <>
-                          <span className="text-white/10 text-[10px]">·</span>
-                          <span className="text-[10px] text-white/20">{ann.readTime}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <ChevronRight size={12} className="text-white/20 shrink-0 mt-1 group-hover:text-white/50 transition-colors" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+//         {/* Announcements — blog-card style */}
+//         {data.announcements.length > 0 && (
+//           <div className="border border-white/[0.06] rounded-2xl overflow-hidden">
+//             <div className="px-4 py-3 border-b border-white/[0.06]">
+//               <span className="text-white/70 text-xs font-semibold">What's New</span>
+//             </div>
+//             {data.announcements.map((ann, i) => (
+//               <div
+//                 key={ann.id}
+//                 className={`px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors group ${
+//                   i < data.announcements.length - 1 ? 'border-b border-white/[0.04]' : ''
+//                 }`}
+//               >
+//                 <div className="flex items-start justify-between gap-3">
+//                   <div className="flex-1 min-w-0">
+//                     {ann.badge && (
+//                       <span className={`inline-block text-[9px] font-semibold px-1.5 py-0.5 rounded mb-1.5 ${
+//                         ann.badge === 'New'
+//                           ? 'bg-blue-500/20 text-blue-400'
+//                           : ann.badge === 'Breaking'
+//                           ? 'bg-red-500/20 text-red-400'
+//                           : 'bg-white/10 text-white/40'
+//                       }`}>
+//                         {ann.badge}
+//                       </span>
+//                     )}
+//                     <p className="text-white/75 text-xs font-medium leading-snug group-hover:text-white/90 transition-colors">
+//                       {ann.title}
+//                     </p>
+//                     <p className="text-white/30 text-[10px] mt-1 leading-relaxed line-clamp-2">
+//                       {ann.description}
+//                     </p>
+//                     <div className="flex items-center gap-2 mt-2">
+//                       <span className="text-[10px] text-white/20">{ann.date}</span>
+//                       {ann.readTime && (
+//                         <>
+//                           <span className="text-white/10 text-[10px]">·</span>
+//                           <span className="text-[10px] text-white/20">{ann.readTime}</span>
+//                         </>
+//                       )}
+//                     </div>
+//                   </div>
+//                   <ChevronRight size={12} className="text-white/20 shrink-0 mt-1 group-hover:text-white/50 transition-colors" />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
 
-        {/* This Week at a Glance */}
-        <div className="border border-white/[0.06] rounded-2xl p-4">
-          <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">This Week at a Glance</p>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <span className="text-white/80 text-xl font-bold">{data.weeklySummary.assetsCreated}</span>
-              <span className="text-white/30 text-xs">assets created</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-white/80 text-xl font-bold">{data.weeklySummary.brands}</span>
-              <span className="text-white/30 text-xs">brands</span>
-            </div>
-          </div>
-          <p className="text-white/20 text-[10px] mt-3">Across your workspace this week</p>
-        </div>
-      </div>
-    </div>
-  )
-}
+//         {/* This Week at a Glance */}
+//         <div className="border border-white/[0.06] rounded-2xl p-4">
+//           <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">This Week at a Glance</p>
+//           <div className="flex items-center gap-6">
+//             <div className="flex items-center gap-2">
+//               <span className="text-white/80 text-xl font-bold">{data.weeklySummary.assetsCreated}</span>
+//               <span className="text-white/30 text-xs">assets created</span>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <span className="text-white/80 text-xl font-bold">{data.weeklySummary.brands}</span>
+//               <span className="text-white/30 text-xs">brands</span>
+//             </div>
+//           </div>
+//           <p className="text-white/20 text-[10px] mt-3">Across your workspace this week</p>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
 
 // ── Today's Schedule ────────────────────────────────────────────────
 type ScheduleState = 'unauthorized' | 'no-meetings' | 'has-meetings'
@@ -1957,7 +1926,7 @@ function ScheduleChips({ meetings }: { meetings: Meeting[] }) {
 }
 
 // ── Recent Work Gallery (Focus tab) ───────────────────────────────
-function RecentWorkGallery({ items }: { items: RecentItem[] }) {
+function RecentWorkGallery() {
   // 4-col gallery card grid — matches Atelier design
   const cards = [
     {
@@ -2679,7 +2648,7 @@ export default function HomePage() {
                       variant="primary"
                       defaultOpen={false}
                     >
-                      <RecentWorkGallery items={recentWorkItems} />
+                      <RecentWorkGallery />
                     </AccordionItem>
                   </HomeAccordion>
                 </>
