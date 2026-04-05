@@ -9,12 +9,12 @@ import {
   Pin,
   PinOff,
   Calendar,
+  CalendarDays,
   ChevronRight,
   ChevronDown,
   ArrowRight,
   Layers,
   BarChart2,
-  MessageSquare,
   Sparkles,
   Video,
   CheckCircle2,
@@ -22,6 +22,10 @@ import {
   X,
   Maximize2,
   ExternalLink,
+  Construction,
+  Brush,
+  Terminal,
+  FolderOpen,
 } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -38,6 +42,10 @@ interface Meeting {
   hasLink: boolean
   status: 'past' | 'active' | 'upcoming' | 'future'
   startsInMin?: number
+  category?: string
+  description?: string
+  isExternal?: boolean
+  attendeeAvatars?: string[]
 }
 
 interface RecentItem {
@@ -48,20 +56,24 @@ interface RecentItem {
   timeAgo: string
   pinned: boolean
   brandName?: string  // undefined = Playground
+  imageUrl?: string
+  itemType?: 'image' | 'list'
 }
 
-interface TrendingTool {
-  rank: number
-  name: string
-  description: string
-  icon: React.ReactNode
-}
+// interface TrendingTool {
+//   rank: number
+//   name: string
+//   description: string
+//   icon: React.ReactNode
+// }
 
 interface YourTool {
   id: string
   name: string
   pillar: string
   icon: React.ReactNode
+  description: string
+  status: 'live' | 'soon'
 }
 
 interface Signal {
@@ -379,15 +391,10 @@ const MOCK_SIGNAL: Signal = {
 }
 
 const MOCK_YOUR_TOOLS: YourTool[] = [
-  { id: 'trendseeker', name: 'Trendseeker', pillar: 'Studio', icon: <TrendingUp size={16} /> },
-  { id: 'visual-labs', name: 'Visual Labs', pillar: 'Studio', icon: <Image size={16} /> },
-  { id: 'persona-gen', name: 'Persona Generator', pillar: 'Research', icon: <Users size={16} /> },
-]
-
-const MOCK_TRENDING: TrendingTool[] = [
-  { rank: 1, name: 'Viral TikTok Trend Analyzer', description: 'Identify and ride trending audio and formats on TikTok', icon: <Video size={14} /> },
-  { rank: 2, name: 'Gen-Z Slang Translator', description: 'Translate brand messaging into Gen-Z native language', icon: <MessageSquare size={14} /> },
-  { rank: 3, name: 'Pitch Deck Outliner', description: 'Generate strategic deck structures from brief inputs', icon: <FileText size={14} /> },
+  { id: 'trendseeker', name: 'Design Suite', pillar: 'Studio', icon: <Brush size={16} />, description: 'Advanced vector tools and layout engines for high-fidelity prototypes.', status: 'live' },
+  { id: 'visual-labs', name: 'Motion Studio', pillar: 'Studio', icon: <Video size={16} />, description: 'Dynamic timeline and keyframe animations for immersive experiences.', status: 'live' },
+  { id: 'persona-gen', name: 'Code Lab', pillar: 'Research', icon: <Terminal size={16} />, description: 'Direct environment for React and Tailwind prototyping with live preview.', status: 'soon' },
+  { id: 'kv-gen', name: 'Generative AI', pillar: 'Growth', icon: <Sparkles size={16} />, description: 'Assisted asset generation and creative prompt engineering workspace.', status: 'soon' },
 ]
 
 const MOCK_MEETINGS: Meeting[] = [
@@ -397,18 +404,18 @@ const MOCK_MEETINGS: Meeting[] = [
 ]
 
 const MOCK_MEETINGS_ACTIVE: Meeting[] = [
-  { id: 'm0', time: '10:00 AM', title: 'Morning Standup', brand: 'Internal', attendees: 8, hasLink: false, status: 'past' },
-  { id: 'm1', time: '11:00 AM', title: 'Valentine Campaign Prep', brand: 'Ultra Milk', attendees: 4, hasLink: true, status: 'active' },
-  { id: 'm2', time: '02:00 PM', title: 'OCBC Quarterly Review', brand: 'Bank OCBC', attendees: 6, hasLink: true, status: 'future' },
-  { id: 'm3', time: '04:00 PM', title: 'Persona Alignment', brand: 'Indofood', attendees: 3, hasLink: true, status: 'future' },
+  { id: 'm0', time: '09:00', title: 'Morning Standup', brand: 'Internal', attendees: 8, hasLink: false, status: 'past', category: 'Editorial' },
+  { id: 'm1', time: '11:00', title: 'Client Sync', brand: 'Ultra Milk', attendees: 4, hasLink: true, status: 'active', category: 'Meeting', description: 'Bi-weekly alignment with the Ultra Milk team.', isExternal: true, attendeeAvatars: ['https://lh3.googleusercontent.com/aida-public/AB6AXuA0zrZNrXUMwNJhfY2sVZlYUsDJ4_mQFnSzPUGrHrIktRvDxJ7MJYSLh70hoZBbHABu5RvBEqPFjJfA5sOyH_cmQAIigmHvNeScDLn6S2cC3CtS6P8MEvP7b1i78jHZQANoeg-EMhpCnLoVmBr1oUlj4Za2PlNazWsZzuh12EP3nb0oiD4bbY6ykQ-M8NrL6LWbmCjln1HP7kXFE3ymklz5unk8b9iYmH13-10wIKphfrTfTcW4URhFUESTdvRxiNNeeEx13qOGmFYe', 'https://lh3.googleusercontent.com/aida-public/AB6AXuBI2ofuGJd38wsWyQIdjyDgu31nATK8Tz9-22XNQjsdlUD2eej14AmE5hDBNJcEZgU084VUSDS-sUoXxeHAAWDhc_sf_giV1ctZ72JyTqlTJ1WeQ6TXFwHc1S-gbxl89rOONmxIR7PVAYbseHdFn2r8UJYbx8ZD4dCuZsJX3E8Fe4TwOYJBAtqVCu7CuNoZ0YIgSh2mRXnFg8dUSMH_vdO4iwPL6ed_3TQ98yEgDgWggUwL16dj63P444jvwmtJ8-J3Rm1BrWSw-XqK'] },
+  { id: 'm2', time: '14:00', title: 'Brand Strategy Review', brand: 'Bank OCBC', attendees: 6, hasLink: true, status: 'future', category: 'FOCUS', description: 'Refining brand guidelines and creative direction for Q3.' },
+  { id: 'm3', time: '16:00', title: 'Sprint Wrap-up', brand: 'Internal', attendees: 3, hasLink: true, status: 'future', category: 'Operations' },
 ]
 
 const MOCK_RECENT: RecentItem[] = [
-  { id: 'r1', title: 'Ultra Milk Brand Guidelines', tool: 'Visual Labs', toolIcon: <Image size={11} />, timeAgo: '4 hrs ago', pinned: true, brandName: 'Ultra Milk' },
-  { id: 'r2', title: 'Q1 OKRs & Tracking', tool: 'KV Generator', toolIcon: <BarChart2 size={11} />, timeAgo: '2 days ago', pinned: true, brandName: 'Ultra Milk' },
-  { id: 'r3', title: 'OCBC Campaign Brief v3', tool: 'Creative Brief', toolIcon: <FileText size={11} />, timeAgo: '3 days ago', pinned: false, brandName: 'Bank OCBC' },
-  { id: 'r4', title: 'Indofood Gen-Z Personas', tool: 'Research', toolIcon: <Users size={11} />, timeAgo: '5 days ago', pinned: false, brandName: 'Indofood' },
-  { id: 'r5', title: 'Valentine KV Draft 02', tool: 'KV Generator', toolIcon: <BarChart2 size={11} />, timeAgo: '1 week ago', pinned: false, brandName: 'Ultra Milk' },
+  { id: 'r1', title: 'Ultra Milk Brand Guidelines', tool: 'Visual Labs', toolIcon: <Image size={11} />, timeAgo: '4 hrs ago', pinned: true, brandName: 'Ultra Milk', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD5g6jB7F-Y1CVh7zY8iYyc-dP7JBJZOKkr7vMWD7DykzBiHKQAIK8_q-Ws_dNJvXpCcXtZK6QKN2GttATm3Q62Q0s0uv9SEY0wokbv0yKhGafWkeX04mgpYVrnPwNSGOe_z0vHcvpgoDOOeAvjK4iKwAUSBUkfCDaRTpF68JAcS6JyY3h7PiyHIHeXt_KeLLHIjhQbNfYCgXcP_HepO1sqOO07g8-wSUexn6O-HbJU8soO_lkfwKfzlgdVsbhvndXrRZHMrLZzDlGS', itemType: 'image' },
+  { id: 'r2', title: 'Q1 OKRs & Tracking', tool: 'KV Generator', toolIcon: <BarChart2 size={11} />, timeAgo: '2 days ago', pinned: true, brandName: 'Ultra Milk', itemType: 'list' },
+  { id: 'r3', title: 'OCBC Campaign Brief v3', tool: 'Creative Brief', toolIcon: <FileText size={11} />, timeAgo: '3 days ago', pinned: false, brandName: 'Bank OCBC', itemType: 'list' },
+  { id: 'r4', title: 'Indofood Gen-Z Personas', tool: 'Research', toolIcon: <Users size={11} />, timeAgo: '5 days ago', pinned: false, brandName: 'Indofood', imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiEEM_AoSFHE--y3pKAfvPW1rSm1gCq0T0ZD9NcWO02sPdX8ztvhh_nyPw_ZdRmfRLtqIsU8a6-lJKeEBTyNuVx_XxnZA0MJ9AmJxfg1cMHSAwo7iVR_YlWUWIVWH_T-64nYXAG8IJ1YpOvY27A-MzX2Lw175y37IZ9m7PGkyu5fJzNTBYL72foAlFQ91aWFwRSNdSzHGp8g3LmHgcqfvpVybyQEk1Y5DuHdYzgHpWXc1WDc-sKALPM-pSBKkBU6S-n8iROVPSRjKF', itemType: 'image' },
+  { id: 'r5', title: 'Valentine KV Draft 02', tool: 'KV Generator', toolIcon: <BarChart2 size={11} />, timeAgo: '1 week ago', pinned: false, brandName: 'Ultra Milk', itemType: 'list' },
 ]
 
 // Playground recent work (State A2)
@@ -417,6 +424,63 @@ const MOCK_RECENT_PLAYGROUND: RecentItem[] = [
   { id: 'pg2', title: 'Competitor Landscape Deck', tool: 'KV Generator', toolIcon: <BarChart2 size={11} />, timeAgo: '3 days ago', pinned: true },
   { id: 'pg3', title: 'Packaging Concept 03', tool: 'Visual Labs', toolIcon: <Image size={11} />, timeAgo: '5 days ago', pinned: false },
 ]
+
+// interface Announcement {
+//   id: string
+//   badge?: string  // e.g. "New", "Update", "Breaking"
+//   title: string
+//   description: string
+//   date: string
+//   readTime?: string
+// }
+
+// interface ForYouData {
+//   dailyFocus: {
+//     message: string
+//     type: 'urgent' | 'normal' | 'caught-up'
+//   }
+//   announcements: Announcement[]
+//   weeklySummary: {
+//     assetsCreated: number
+//     brands: number
+//   }
+// }
+
+// ── For You Section Mock Data ──────────────────────────────────────
+// const MOCK_FOR_YOU: ForYouData = {
+//   dailyFocus: {
+//     message: "Ultra Milk guardrails at 72% — review flagged assets before the Valentine campaign deadline.",
+//     type: 'urgent',
+//   },
+//   announcements: [
+//     {
+//       id: 'ann1',
+//       badge: 'New',
+//       title: 'Trendseeker now supports audio trend analysis for TikTok',
+//       description: 'Detect trending sounds and music clips directly from your dashboard.',
+//       date: '2026-04-05',
+//       readTime: '2 min read',
+//     },
+//     {
+//       id: 'ann2',
+//       badge: 'Update',
+//       title: 'Brand Guardrails v2 — 40% faster scanning',
+//       description: 'New incremental scan mode reduces re-check time from 3 minutes to under 90 seconds.',
+//       date: '2026-04-03',
+//     },
+//     {
+//       id: 'ann3',
+//       badge: 'Update',
+//       title: 'Canvas export now supports 8K resolution',
+//       description: 'Export creatives at up to 7680 × 4320 for high-res campaign materials.',
+//       date: '2026-04-01',
+//     },
+//   ],
+//   weeklySummary: {
+//     assetsCreated: 19,
+//     brands: 6,
+//   },
+// }
 
 // Brand-assigned recent work (State B2 — Fresh Brand, zero data)
 const MOCK_RECENT_B: RecentItem[] = [
@@ -464,29 +528,29 @@ const DEMO_STEPS_CONFIG: Record<DemoStep, {
   group?: string
 }> = {
   A1: {
-    state: 'A', tabHint: 'No tabs — brand sections hidden',
+    state: 'A', tabHint: 'No tabs — For You visible',
     title: 'Pure Playground — Nothing Yet',
-    desc: 'User enters frndOS for the first time. No brand assigned, no work history, calendar not connected. All sections show empty states with CTAs to take the first action.',
+    desc: 'User enters frndOS for the first time. No brand assigned, no work history, calendar not connected. For You section shows Daily Focus + What\'s New announcements + This Week stats. Your Tools and Recent Work show empty states.',
   },
   A2: {
-    state: 'A', tabHint: 'No tabs — Recent Work populated',
+    state: 'A', tabHint: 'No tabs — For You + Recent Work populated',
     title: 'Playground — First Work Generated',
-    desc: 'User has used frndOS in Playground mode — generated a brief or created a KV, but still not assigned to any brand. Recent Work section is now populated.',
+    desc: 'User has used frndOS in Playground mode — generated a brief or created a KV, but still not assigned to any brand. For You section is live (Daily Focus + What\'s New announcements + This Week stats). Recent Work section is now populated.',
   },
   B1: {
     state: 'B', tabHint: 'Overview tab',
     title: 'Brand Assigned — Zero Data (Overview)',
-    desc: 'User is assigned to a brand (Fresh Brand) but has not generated anything yet. Brand card appears in Overview grid showing "No active campaigns."',
+    desc: 'User is assigned to a brand (Fresh Brand) but has not generated anything yet. Brand card appears in Overview grid. For You section shows What\'s New announcements and This Week stats.',
   },
   B2: {
     state: 'B', tabHint: 'Focus tab',
     title: 'Brand Assigned — Zero Data (Focus)',
-    desc: 'Same brand. Focus tab selected. Signal card: "No active campaigns." Recent Work is empty. No campaigns, no assets, no research.',
+    desc: 'Same brand. Focus tab selected. BrandSignalCard shows "No active campaigns." For You section visible with announcements. Recent Work minimal.',
   },
   C1: {
     state: 'C', tabHint: 'Focus tab',
     title: 'Active Brand — Full Experience',
-    desc: 'Brand with real data. All sections live: Today\'s Signal, Studio/Research/Insights health, Recent Work, and Schedule.',
+    desc: 'Brand with real data. All sections live: Today\'s Signal, BrandSignalCard, For You (Daily Focus + What\'s New + This Week), Your Tools, Recent Work, and Schedule.',
   },
   C2: {
     state: 'C', tabHint: 'Focus: Brand Signal — Serious',
@@ -1041,17 +1105,16 @@ function deriveBrandSignals(brand: Brand): BrandSignal[] {
     } else if (pct < 70) {
       out.push({
         type: 'critical',
-        title: `Only ${pct}% of assets pass brand guardrails`,
-        desc: `${failPct}% of assets are off-brand. Most failures are typography violations and off-brand color usage. These will damage brand consistency at scale.`,
-        cta: 'Review flagged assets',
+        title: `Brand setup progress: ${pct}%`,
+        desc: `${failPct}% still being finalized. The team is working to get all assets aligned before the next campaign goes live.`,
+        cta: 'View progress',
       })
     } else if (pct < 95) {
-      const flagged = Math.round(failPct * 0.38)
       out.push({
         type: 'warning',
-        title: `${failPct}% of assets fail brand guardrails`,
-        desc: `${flagged} asset${flagged !== 1 ? 's' : ''} flagged for off-brand color usage or incorrect logo placement. Review and fix before they go live in campaign materials.`,
-        cta: 'Review flagged assets',
+        title: `Brand setup progress: ${pct}%`,
+        desc: `${failPct}% to go — just a few tweaks away from a complete brand setup. One review session will bring everything to standard.`,
+        cta: 'Finish setup',
       })
     }
     // 100% = all good, no Studio signal needed
@@ -1363,55 +1426,232 @@ function TodaySignalCard({ signal }: { signal: Signal }) {
   )
 }
 
-// ── Your Tools Strip ────────────────────────────────────────────────
-function YourToolsStrip({ tools }: { tools: YourTool[] }) {
+// ── Home Accordion ─────────────────────────────────────────────────
+function HomeAccordion({ children }: { children: React.ReactNode }) {
+  return <div className="space-y-4">{children}</div>
+}
+
+function AccordionItem({
+  title,
+  icon,
+  badge,
+  dateLabel,
+  action,
+  defaultOpen = false,
+  variant = 'primary',
+  children,
+}: {
+  title: string
+  icon: React.ReactNode
+  badge?: string
+  dateLabel?: string
+  action?: React.ReactNode
+  defaultOpen?: boolean
+  variant?: 'primary' | 'secondary'
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+
+  const isPrimary = variant === 'primary'
+  const headerPy = isPrimary ? 'py-4 px-6' : 'py-3 px-6'
+  const titleSize = isPrimary ? 'text-lg' : 'text-base'
+  const titleColor = isPrimary ? 'text-white' : 'text-white/75'
+
   return (
-    <div className="mb-6">
-      <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">Your tools</p>
-      <div className="flex gap-2">
-        {tools.map((tool) => (
-          <button
-            key={tool.id}
-            className="group flex-1 border border-white/[0.08] rounded-xl p-3.5 text-left bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/15 transition-all duration-200"
-          >
-            <div className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-white/40 mb-2.5 group-hover:text-white/70 transition-colors">
-              {tool.icon}
+    <div className={`border border-white/5 ${isPrimary ? 'rounded-xl bg-[#1c1c1c]' : 'rounded-lg bg-[#1c1c1c]/30'}`}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className={`w-full flex items-center justify-between ${headerPy} rounded-xl ${isPrimary ? '' : 'hover:bg-white/[0.03]'} transition-colors`}
+      >
+        <div className="flex items-center gap-4">
+          <span className={isPrimary ? 'text-white/40' : 'text-white/50'}>{icon}</span>
+          <h2 className={`font-headline font-bold ${titleSize} ${titleColor} tracking-tight`}>{title}</h2>
+        </div>
+        <div className="flex items-center gap-4">
+          {action && (
+            <div onClick={(e) => e.stopPropagation()}>
+              {action}
             </div>
-            <p className="text-white/75 text-xs font-semibold leading-snug">{tool.name}</p>
-            <p className="text-white/25 text-[10px] mt-0.5">{tool.pillar}</p>
-          </button>
-        ))}
-      </div>
+          )}
+          {dateLabel && (
+            <span className="text-[10px] text-white/35 uppercase tracking-widest font-label">{dateLabel}</span>
+          )}
+          {badge && (
+            <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase tracking-tighter font-medium ${
+              badge === 'LIVE'
+                ? 'border border-white/20 text-white/60'
+                : 'bg-white/10 text-white/30'
+            }`}>{badge}</span>
+          )}
+          <ChevronDown
+            size={18}
+            className={`text-white/30 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+          />
+        </div>
+      </button>
+      {open && (
+        <div className={`p-6 border-t border-white/5 rounded-b-xl ${isPrimary ? 'bg-[#1c1c1c]/50' : 'bg-[#1c1c1c]/20'}`}>
+          {children}
+        </div>
+      )}
     </div>
   )
 }
 
-// ── Trending Feed ───────────────────────────────────────────────────
-function TrendingFeed({ tools }: { tools: TrendingTool[] }) {
+// ── Your Tools Strip ────────────────────────────────────────────────
+function YourToolsStrip({ tools }: { tools: YourTool[] }) {
   return (
-    <div className="border border-white/[0.06] rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-        <span className="text-white/70 text-xs font-semibold">Trending in frndOS</span>
-        <span className="text-[9px] text-white/20 uppercase tracking-widest font-medium">Agency Wide</span>
-      </div>
-      {tools.map((tool) => (
-        <button
-          key={tool.rank}
-          className="w-full flex items-center gap-3 px-4 py-3 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.04] transition-colors text-left"
-        >
-          <span className="text-[11px] text-white/15 font-mono w-4 shrink-0">{tool.rank}</span>
-          <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/35 shrink-0">
-            {tool.icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white/75 text-xs font-medium truncate">{tool.name}</p>
-            <p className="text-white/25 text-[10px] truncate mt-0.5">{tool.description}</p>
-          </div>
-        </button>
-      ))}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {tools.map((tool) => {
+        const isLive = tool.status === 'live'
+        return (
+          <button
+            key={tool.id}
+            className={`group text-left p-6 rounded-lg border border-transparent transition-all duration-300 cursor-pointer shadow-sm ${
+              isLive
+                ? 'bg-[#1c1c1c] hover:border-white/20'
+                : 'bg-[#1c1c1c]/40 opacity-70 hover:opacity-100 hover:border-white/10'
+            }`}
+          >
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-6 ${
+              isLive
+                ? 'bg-[#2a2a2a] text-white group-hover:bg-white group-hover:text-black transition-colors'
+                : 'bg-[#2a2a2a]/50 text-white/40'
+            }`}>
+              {tool.icon}
+            </div>
+            <h3 className={`font-bold text-white text-sm mb-2 leading-tight`}>
+              {tool.name}
+            </h3>
+            <p className={`text-xs leading-relaxed ${isLive ? 'text-neutral-500' : 'text-neutral-600'}`}>
+              {tool.description}
+            </p>
+          </button>
+        )
+      })}
     </div>
   )
 }
+
+
+
+// ── For You Section (9.K) ───────────────────────────────────────
+// function ForYouSection({ data }: { data: ForYouData }) {
+//   return (
+//     <div className="mb-6">
+//       {/* Section label */}
+//       <div className="flex items-center justify-between mb-4">
+//         <span className="text-white/25 text-[11px] uppercase tracking-widest font-medium">For You</span>
+//       </div>
+
+//       <div className="space-y-4">
+//         {/* Daily Focus */}
+//         <div className={`border rounded-2xl p-4 flex items-start gap-4 ${
+//           data.dailyFocus.type === 'urgent'
+//             ? 'border-red-500/20 bg-red-500/5'
+//             : data.dailyFocus.type === 'caught-up'
+//             ? 'border-green-500/20 bg-green-500/5'
+//             : 'border-white/[0.08] bg-white/[0.02]'
+//         }`}>
+//           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+//             data.dailyFocus.type === 'urgent'
+//               ? 'bg-red-500/20'
+//               : data.dailyFocus.type === 'caught-up'
+//               ? 'bg-green-500/20'
+//               : 'bg-white/5'
+//           }`}>
+//             {data.dailyFocus.type === 'urgent' ? (
+//               <AlertTriangle size={13} className="text-red-400" />
+//             ) : data.dailyFocus.type === 'caught-up' ? (
+//               <CheckCircle2 size={13} className="text-green-400" />
+//             ) : (
+//               <Sparkles size={13} className="text-white/40" />
+//             )}
+//           </div>
+//           <div className="flex-1 min-w-0">
+//             <p className="text-white/80 text-xs font-medium leading-relaxed">{data.dailyFocus.message}</p>
+//             <div className="flex items-center gap-2 mt-1.5">
+//               {data.dailyFocus.type === 'urgent' && (
+//                 <span className="text-[10px] text-red-400/70 font-medium">Needs attention</span>
+//               )}
+//               {data.dailyFocus.type === 'caught-up' && (
+//                 <span className="text-[10px] text-green-400/70 font-medium">All caught up</span>
+//               )}
+//               {data.dailyFocus.type === 'normal' && (
+//                 <span className="text-[10px] text-white/30 font-medium">Daily focus</span>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Announcements — blog-card style */}
+//         {data.announcements.length > 0 && (
+//           <div className="border border-white/[0.06] rounded-2xl overflow-hidden">
+//             <div className="px-4 py-3 border-b border-white/[0.06]">
+//               <span className="text-white/70 text-xs font-semibold">What's New</span>
+//             </div>
+//             {data.announcements.map((ann, i) => (
+//               <div
+//                 key={ann.id}
+//                 className={`px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors group ${
+//                   i < data.announcements.length - 1 ? 'border-b border-white/[0.04]' : ''
+//                 }`}
+//               >
+//                 <div className="flex items-start justify-between gap-3">
+//                   <div className="flex-1 min-w-0">
+//                     {ann.badge && (
+//                       <span className={`inline-block text-[9px] font-semibold px-1.5 py-0.5 rounded mb-1.5 ${
+//                         ann.badge === 'New'
+//                           ? 'bg-blue-500/20 text-blue-400'
+//                           : ann.badge === 'Breaking'
+//                           ? 'bg-red-500/20 text-red-400'
+//                           : 'bg-white/10 text-white/40'
+//                       }`}>
+//                         {ann.badge}
+//                       </span>
+//                     )}
+//                     <p className="text-white/75 text-xs font-medium leading-snug group-hover:text-white/90 transition-colors">
+//                       {ann.title}
+//                     </p>
+//                     <p className="text-white/30 text-[10px] mt-1 leading-relaxed line-clamp-2">
+//                       {ann.description}
+//                     </p>
+//                     <div className="flex items-center gap-2 mt-2">
+//                       <span className="text-[10px] text-white/20">{ann.date}</span>
+//                       {ann.readTime && (
+//                         <>
+//                           <span className="text-white/10 text-[10px]">·</span>
+//                           <span className="text-[10px] text-white/20">{ann.readTime}</span>
+//                         </>
+//                       )}
+//                     </div>
+//                   </div>
+//                   <ChevronRight size={12} className="text-white/20 shrink-0 mt-1 group-hover:text-white/50 transition-colors" />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         {/* This Week at a Glance */}
+//         <div className="border border-white/[0.06] rounded-2xl p-4">
+//           <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">This Week at a Glance</p>
+//           <div className="flex items-center gap-6">
+//             <div className="flex items-center gap-2">
+//               <span className="text-white/80 text-xl font-bold">{data.weeklySummary.assetsCreated}</span>
+//               <span className="text-white/30 text-xs">assets created</span>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <span className="text-white/80 text-xl font-bold">{data.weeklySummary.brands}</span>
+//               <span className="text-white/30 text-xs">brands</span>
+//             </div>
+//           </div>
+//           <p className="text-white/20 text-[10px] mt-3">Across your workspace this week</p>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
 
 // ── Today's Schedule ────────────────────────────────────────────────
 type ScheduleState = 'unauthorized' | 'no-meetings' | 'has-meetings'
@@ -1457,7 +1697,7 @@ function TodaySchedule({ state, meetings }: { state: ScheduleState; meetings: Me
             return (
               <div
                 key={meeting.id}
-                className={`flex gap-4 py-3 border-b border-white/[0.04] last:border-0 ${isPast ? 'opacity-40' : ''}`}
+                className={`flex gap-2 py-2 border-b border-white/[0.04] last:border-0 ${isPast ? 'opacity-40' : ''}`}
               >
                 <div className="shrink-0 text-right w-16">
                   <p className="text-[11px] text-white/35 font-mono">{meeting.time}</p>
@@ -1557,6 +1797,219 @@ function RecentWorkModal({ items, pinned, onTogglePin, onClose, showBrand }: {
         </div>
       </div>
     </>
+  )
+}
+
+// ── Schedule Timeline (Focus tab) ─────────────────────────────────
+function ScheduleTimeline({ meetings }: { meetings: Meeting[] }) {
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()
+
+  return (
+    <div>
+      {/* Date label */}
+      <div className="flex items-center justify-end mb-6 pr-4">
+        <span className="text-[10px] text-white/35 uppercase tracking-widest font-label">{today}</span>
+      </div>
+
+      {/* Timeline */}
+      <div className="relative pl-20 md:pl-28 space-y-6">
+        {/* Vertical line */}
+        <div className="absolute left-[4.5rem] md:left-[7.5rem] top-0 bottom-0 w-[1px] bg-white/10" />
+
+        {meetings.map((meeting) => {
+          const isPast = meeting.status === 'past'
+          const isActive = meeting.status === 'active'
+          const isExternal = meeting.isExternal
+          const isFocus = meeting.category === 'FOCUS'
+
+          const dotColor = isActive
+            ? 'bg-white ring-4 ring-[#131313] shadow-[0_0_10px_rgba(255,255,255,0.4)]'
+            : isPast
+            ? 'bg-white/30 ring-4 ring-[#131313]'
+            : 'bg-white/50 ring-4 ring-[#131313]'
+
+          const cardBg = isActive ? 'bg-[#1c1c1c]' : 'bg-[#1c1c1c]/60'
+
+          return (
+            <div key={meeting.id} className="relative">
+              {/* Time label */}
+              <div className="absolute -left-20 md:-left-28 w-16 md:w-20 pt-1 text-right">
+                <span className="text-xs font-bold text-white">{meeting.time}</span>
+              </div>
+
+              {/* Dot */}
+              <div className={`absolute left-[4.1rem] md:left-[7.1rem] top-2 w-2 h-2 rounded-full ${dotColor}`} />
+
+              {/* Card */}
+              <div className={`ml-12 md:ml-20 p-4 rounded-lg border border-white/5 ${cardBg} hover:bg-[#2a2a2a] transition-all cursor-pointer group relative overflow-hidden`}>
+                {/* Focus glow */}
+                {isFocus && (
+                  <div className="absolute -right-16 -top-16 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
+                )}
+
+                <div className="flex items-start justify-between gap-4 mb-1">
+                  <div className="flex items-center gap-2">
+                    {meeting.category && (
+                      <span className={`text-[9px] uppercase tracking-widest font-bold ${isFocus ? 'bg-white text-black px-2 py-0.5 rounded-full' : 'text-white/35'}`}>
+                        {meeting.category}
+                      </span>
+                    )}
+                    {isExternal && (
+                      <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/10 text-white/60 uppercase tracking-widest font-bold">
+                        External
+                      </span>
+                    )}
+                  </div>
+                  {meeting.status === 'active' && (
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-white text-black uppercase tracking-widest">
+                      Live
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="text-sm font-bold text-white">{meeting.title}</h3>
+
+                {meeting.description && (
+                  <p className="text-[11px] text-white/40 mt-1 leading-relaxed max-w-md">{meeting.description}</p>
+                )}
+
+                {/* Attendees avatars */}
+                {meeting.attendeeAvatars && meeting.attendeeAvatars.length > 0 && (
+                  <div className="flex -space-x-2 mt-3">
+                    {meeting.attendeeAvatars.map((avatar, i) => (
+                      <img key={i} src={avatar} alt="" className="w-6 h-6 rounded-full border-2 border-[#1c1c1c]" />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ── Schedule Chips (compact, State A) ────────────────────────────
+function ScheduleChips({ meetings }: { meetings: Meeting[] }) {
+  return (
+    <div className="flex flex-wrap gap-4">
+      {meetings.map((meeting) => {
+        const isPast = meeting.status === 'past'
+        const isActive = meeting.status === 'active'
+        return (
+          <div
+            key={meeting.id}
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg border text-xs ${
+              isActive
+                ? 'bg-[#2a2a2a] border-white/20 text-white'
+                : isPast
+                ? 'bg-[#1c1c1c] border-white/5 text-white/30'
+                : 'bg-[#1c1c1c] border-white/5 text-white/60'
+            }`}
+          >
+            <span className={`font-bold ${isPast ? 'text-white/30' : 'text-white'}`}>{meeting.time}</span>
+            {isPast ? (
+              <span className="italic text-white/30">{meeting.title}</span>
+            ) : (
+              <span className="font-medium">{meeting.title}</span>
+            )}
+            {isActive && (
+              <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[8px] font-bold uppercase tracking-widest">Live</span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── Recent Work Gallery (Focus tab) ───────────────────────────────
+function RecentWorkGallery() {
+  // 4-col gallery card grid — matches Atelier design
+  const cards = [
+    {
+      imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD5g6jB7F-Y1CVh7zY8iYyc-dP7JBJZOKkr7vMWD7DykzBiHKQAIK8_q-Ws_dNJvXpCcXtZK6QKN2GttATm3Q62Q0s0uv9SEY0wokbv0yKhGafWkeX04mgpYVrnPwNSGOe_z0vHcvpgoDOOeAvjK4iKwAUSBUkfCDaRTpF68JAcS6JyY3h7PiyHIHeXt_KeLLHIjhQbNfYCgXcP_HepO1sqOO07g8-wSUexn6O-HbJU8soO_lkfwKfzlgdVsbhvndXrRZHMrLZzDlGS',
+      status: 'In Progress',
+      statusColor: 'text-white border-white/10 bg-black/60',
+      title: 'Lumina Landing Page',
+      toolLabel: 'Creative Brief',
+      timeAgo: '2h ago',
+      hasImage: true,
+    },
+    {
+      imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiEEM_AoSFHE--y3pKAfvPW1rSm1gCq0T0ZD9NcWO02sPdX8ztvhh_nyPw_ZdRmfRLtqIsU8a6-lJKeEBTyNuVx_XxnZA0MJ9AmJxfg1cMHSAwo7iVR_YlWUWIVWH_T-64nYXAG8IJ1YpOvY27A-MzX2Lw175y37IZ9m7PGkyu5fJzNTBYL72foAlFQ91aWFwRSNdSzHGp8g3LmHgcqfvpVybyQEk1Y5DuHdYzgHpWXc1WDc-sKALPM-pSBKkBU6S-n8iROVPSRjKF',
+      status: 'Draft',
+      statusColor: 'text-neutral-400 border-white/10 bg-black/60',
+      title: 'Monolith Brand Book',
+      toolLabel: 'KV Generator',
+      timeAgo: '1d ago',
+      hasImage: true,
+    },
+    {
+      imageUrl: null,
+      status: 'Ready',
+      statusColor: 'text-emerald-400 border-emerald-500/10 bg-black/60',
+      title: 'Aetherial Form Study 01',
+      toolLabel: 'Image Editor',
+      timeAgo: '3d ago',
+      hasImage: false,
+    },
+    {
+      imageUrl: null,
+      status: 'Review',
+      statusColor: 'text-amber-400 border-amber-500/10 bg-black/60',
+      title: 'Glass UI Component',
+      toolLabel: 'Survey',
+      timeAgo: '1w ago',
+      hasImage: false,
+    },
+  ]
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          className="group relative bg-[#1c1c1c] rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-500 cursor-pointer"
+        >
+          {/* Image / icon area */}
+          <div className="aspect-[4/3] relative overflow-hidden">
+            {card.hasImage && card.imageUrl ? (
+              <img
+                src={card.imageUrl}
+                alt={card.title}
+                className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+              />
+            ) : (
+              <div className="w-full h-full bg-neutral-900 flex items-center justify-center">
+                <span className="text-neutral-700 text-6xl group-hover:text-white/30 transition-colors">
+                  {i === 2 ? '◐' : '⊞'}
+                </span>
+              </div>
+            )}
+            {/* Status badge */}
+            <div className="absolute top-4 left-4">
+              <span className={`px-2 py-1 rounded backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border ${card.statusColor}`}>
+                {card.status}
+              </span>
+            </div>
+          </div>
+          {/* Card body */}
+          <div className="p-4">
+            <div className="flex justify-between items-start mb-0.5">
+              <h4 className="text-sm font-bold text-white leading-tight">{card.title}</h4>
+              <span className="text-neutral-500 hover:text-white cursor-pointer transition-colors shrink-0 ml-2">⁝</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-[10px] text-neutral-500 uppercase tracking-widest">{card.toolLabel}</p>
+              <span className="text-white/20 text-[9px]">·</span>
+              <p className="text-[10px] text-neutral-600">{card.timeAgo}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -2077,33 +2530,54 @@ export default function HomePage() {
 
           {/* ── STATE A: Playground (no tabs) ── */}
           {(isA1 || isA2) && (
-            <div>
-              {/* Schedule — always shown in State A (can be unauthorized) */}
-              {showSchedule && (
-                <div className="mb-6">
-                  <TodaySchedule state={calendarState} meetings={meetings} />
-                </div>
-              )}
-              {/* Your Tools + Trending — always visible (not brand-bound) */}
+            <HomeAccordion>
+              {/* Your Tools — primary, expanded */}
               {showTools && (
-                <div className="grid grid-cols-5 gap-6 mb-6">
-                  <div className="col-span-3">
-                    <YourToolsStrip tools={MOCK_YOUR_TOOLS} />
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">Trending in frndOS</p>
-                    <TrendingFeed tools={MOCK_TRENDING} />
-                  </div>
-                </div>
+                <AccordionItem
+                  title="Your Tools"
+                  icon={<Construction size={20} />}
+                  variant="primary"
+                  defaultOpen={true}
+                  action={
+                    <span className="flex items-center gap-1 text-sm text-white/40 hover:text-white transition-colors cursor-pointer">
+                      <span>View Library</span>
+                      <ArrowRight size={14} />
+                    </span>
+                  }
+                >
+                  <YourToolsStrip tools={MOCK_YOUR_TOOLS} />
+                </AccordionItem>
               )}
-              {/* Recent Work — empty in A1, populated in A2 */}
-              <RecentWork
-                items={recentWorkItems}
-                empty={isA1}
-                showBrand={!isA1}
-                onStartTask={() => setCmdOpen(true)}
-              />
-            </div>
+              {/* Today's Schedule */}
+              {showSchedule && (
+                <AccordionItem
+                  title="Today's Schedule"
+                  icon={<CalendarDays size={18} />}
+                  variant="primary"
+                  defaultOpen={false}
+                >
+                  {calendarState === 'unauthorized' ? (
+                    <TodaySchedule state={calendarState} meetings={meetings} />
+                  ) : (
+                    <ScheduleChips meetings={meetings} />
+                  )}
+                </AccordionItem>
+              )}
+              {/* Recent Work */}
+              <AccordionItem
+                title="Recent Work"
+                icon={<FolderOpen size={18} />}
+                variant="primary"
+                defaultOpen={false}
+              >
+                <RecentWork
+                  items={recentWorkItems}
+                  empty={isA1}
+                  showBrand={!isA1}
+                  onStartTask={() => setCmdOpen(true)}
+                />
+              </AccordionItem>
+            </HomeAccordion>
           )}
 
           {/* ── STATE B / C: Brand Tabs ── */}
@@ -2137,33 +2611,45 @@ export default function HomePage() {
                   {/* Today's Signal */}
                   {showSignal && <TodaySignalCard signal={MOCK_SIGNAL} />}
 
-                  {/* Your Tools + Trending */}
-                  {showTools && (
-                    <div className="grid grid-cols-5 gap-6 mb-6">
-                      <div className="col-span-3">
+                  <HomeAccordion>
+                    {/* Your Tools — primary, collapsed by default */}
+                    {showTools && (
+                      <AccordionItem
+                        title="Your Tools"
+                        icon={<Construction size={20} />}
+                        variant="primary"
+                        defaultOpen={false}
+                        action={
+                          <span className="flex items-center gap-1 text-sm text-white/40 hover:text-white transition-colors cursor-pointer">
+                            <span>View Library</span>
+                            <ArrowRight size={14} />
+                          </span>
+                        }
+                      >
                         <YourToolsStrip tools={MOCK_YOUR_TOOLS} />
-                      </div>
-                      <div className="col-span-2">
-                        <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">Trending in frndOS</p>
-                        <TrendingFeed tools={MOCK_TRENDING} />
-                      </div>
-                    </div>
-                  )}
+                      </AccordionItem>
+                    )}
 
-                  {/* Schedule + Recent Work */}
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
-                      <TodaySchedule state={calendarState} meetings={meetings} />
-                    </div>
-                    <div>
-                      <RecentWork
-                        items={recentWorkItems}
-                        empty={false}
-                        showBrand
-                        onStartTask={() => setCmdOpen(true)}
-                      />
-                    </div>
-                  </div>
+                    {/* Today's Schedule — primary, expanded */}
+                    <AccordionItem
+                      title="Today's Schedule"
+                      icon={<CalendarDays size={18} />}
+                      variant="primary"
+                      defaultOpen={true}
+                    >
+                      <ScheduleTimeline meetings={meetings} />
+                    </AccordionItem>
+
+                    {/* Recent Work — primary, collapsed */}
+                    <AccordionItem
+                      title="Recent Work"
+                      icon={<FolderOpen size={18} />}
+                      variant="primary"
+                      defaultOpen={false}
+                    >
+                      <RecentWorkGallery />
+                    </AccordionItem>
+                  </HomeAccordion>
                 </>
               )}
             </>
