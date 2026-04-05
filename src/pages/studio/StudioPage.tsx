@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import {
   Layers, LayoutDashboard, PenTool, Maximize2, ChevronRight,
   Beaker, FileText, Video, Layers2, PresentationIcon,
-  Building2, FlaskConical, AlertCircle, ArrowRight, AlertTriangle,
+  Building2, FlaskConical, AlertCircle, ArrowRight,
   PlusCircle, Sparkles, Search, X, Check, CheckCircle2,
-  Download, Zap, Clock, ChevronLeft, RefreshCw,
+  Download, Zap, ChevronLeft, RefreshCw,
 } from 'lucide-react'
 
 // ── Nav Modules (for Cmd+K) ─────────────────────────────────────────
@@ -241,16 +241,6 @@ function avatarColor(initials: string): string {
   return colors[Math.abs(hash) % colors.length]
 }
 
-// Activity icon
-function activityIcon(type: ActivityType) {
-  switch (type) {
-    case 'generated': return <Zap size={10} className="text-blue-400/60" />
-    case 'exported': return <Download size={10} className="text-green-400/60" />
-    case 'saved': return <CheckCircle2 size={10} className="text-purple-400/60" />
-    case 'started': return <PlusCircle size={10} className="text-amber-400/60" />
-    case 'shared': return <ArrowRight size={10} className="text-pink-400/60" />
-  }
-}
 
 // ── Suggested Actions Mock ─────────────────────────────────────────
 type SuggestionAction = 'resume' | 'export' | 'start'
@@ -323,10 +313,6 @@ function formatRelativeTime(isoString: string): string {
   return `${days}d ago`
 }
 
-function getToolLabel(projectId: string): string {
-  if (projectId.startsWith('p')) return 'KV Generator'
-  return 'Image Editor'
-}
 
 // ── Workspace Context ──────────────────────────────────────────────
 function WorkspaceContext() {
@@ -356,7 +342,6 @@ function WorkspaceContext() {
 function BrandGuardrailChecklist() {
   const { workspace } = SESSION
   const identity = ACTIVE_BRAND_IDENTITY
-  const [openSettings, setOpenSettings] = useState(false)
 
   if (workspace.type === 'playground') return null
 
