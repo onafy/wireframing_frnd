@@ -15,7 +15,6 @@ import {
   ArrowRight,
   Layers,
   BarChart2,
-  MessageSquare,
   Sparkles,
   Video,
   CheckCircle2,
@@ -61,12 +60,12 @@ interface RecentItem {
   itemType?: 'image' | 'list'
 }
 
-interface TrendingTool {
-  rank: number
-  name: string
-  description: string
-  icon: React.ReactNode
-}
+// interface TrendingTool {
+//   rank: number
+//   name: string
+//   description: string
+//   icon: React.ReactNode
+// }
 
 interface YourTool {
   id: string
@@ -435,17 +434,17 @@ interface Announcement {
   readTime?: string
 }
 
-interface ForYouData {
-  dailyFocus: {
-    message: string
-    type: 'urgent' | 'normal' | 'caught-up'
-  }
-  announcements: Announcement[]
-  weeklySummary: {
-    assetsCreated: number
-    brands: number
-  }
-}
+// interface ForYouData {
+//   dailyFocus: {
+//     message: string
+//     type: 'urgent' | 'normal' | 'caught-up'
+//   }
+//   announcements: Announcement[]
+//   weeklySummary: {
+//     assetsCreated: number
+//     brands: number
+//   }
+// }
 
 // ── For You Section Mock Data ──────────────────────────────────────
 // const MOCK_FOR_YOU: ForYouData = {
