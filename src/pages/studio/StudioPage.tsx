@@ -5,7 +5,7 @@ import {
   Beaker, FileText, Video, Layers2, PresentationIcon,
   Building2, FlaskConical, AlertCircle, ArrowRight,
   PlusCircle, Sparkles, Search, X, Check, CheckCircle2,
-  Download, Zap, ChevronLeft, RefreshCw,
+ ChevronLeft, RefreshCw,
 } from 'lucide-react'
 
 // ── Nav Modules (for Cmd+K) ─────────────────────────────────────────
@@ -415,12 +415,6 @@ function BrandGuardrailChecklist() {
               />
             </div>
           </div>
-          <button
-            onClick={() => setOpenSettings(true)}
-            className="text-white/30 hover:text-white/70 text-[11px] transition-colors"
-          >
-            Open Settings
-          </button>
         </div>
       </div>
 
