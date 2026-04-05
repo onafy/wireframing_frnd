@@ -1913,11 +1913,6 @@ export default function HomePage() {
     isB1 ? [] :
     MOCK_BRANDS
 
-  // Brand selected in Overview (highlights card)
-  const _overviewSelectedBrand: Brand | null =
-    isB1 || isB2 ? MOCK_BRAND_ZERO_DATA :
-    isC ? MOCK_BRANDS[0] :
-    null
 
   // Calendar
   const calendarState: ScheduleState =
