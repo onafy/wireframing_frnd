@@ -1146,13 +1146,6 @@ function classifyBrandFocus(brand: Brand): 'serious' | 'attention' | 'healthy' |
 const FOCUS_GROUP_ORDER = ['serious', 'attention', 'healthy', 'no-data'] as const
 type FocusGroup = typeof FOCUS_GROUP_ORDER[number]
 
-const _FOCUS_GROUP_LABELS: Record<FocusGroup, string> = {
-  serious: 'BRAND YANG ADA MASALAH SERIUS',
-  attention: 'BRAND YANG BUTUH PERHATIAN',
-  healthy: 'BRAND YANG SEHAT — QUIET CARD',
-  'no-data': 'BRAND TANPA DATA',
-}
-
 function BrandSignalCard({ brand }: { brand: Brand }) {
   const signals = deriveBrandSignals(brand)
 
@@ -1888,7 +1881,6 @@ export default function HomePage() {
   const isB1 = demoStep === 'B1'
   const isB2 = demoStep === 'B2'
   const isC  = demoStep.startsWith('C')
-  const _isC1 = demoStep === 'C1'
   const isC6 = demoStep === 'C6'
 
   // ── Effective tab ─────────────────────────────────────────────────
