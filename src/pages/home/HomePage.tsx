@@ -425,14 +425,14 @@ const MOCK_RECENT_PLAYGROUND: RecentItem[] = [
   { id: 'pg3', title: 'Packaging Concept 03', tool: 'Visual Labs', toolIcon: <Image size={11} />, timeAgo: '5 days ago', pinned: false },
 ]
 
-interface Announcement {
-  id: string
-  badge?: string  // e.g. "New", "Update", "Breaking"
-  title: string
-  description: string
-  date: string
-  readTime?: string
-}
+// interface Announcement {
+//   id: string
+//   badge?: string  // e.g. "New", "Update", "Breaking"
+//   title: string
+//   description: string
+//   date: string
+//   readTime?: string
+// }
 
 // interface ForYouData {
 //   dailyFocus: {
