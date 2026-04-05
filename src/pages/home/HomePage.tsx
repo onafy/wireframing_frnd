@@ -1146,7 +1146,7 @@ function classifyBrandFocus(brand: Brand): 'serious' | 'attention' | 'healthy' |
 const FOCUS_GROUP_ORDER = ['serious', 'attention', 'healthy', 'no-data'] as const
 type FocusGroup = typeof FOCUS_GROUP_ORDER[number]
 
-const FOCUS_GROUP_LABELS: Record<FocusGroup, string> = {
+const _FOCUS_GROUP_LABELS: Record<FocusGroup, string> = {
   serious: 'BRAND YANG ADA MASALAH SERIUS',
   attention: 'BRAND YANG BUTUH PERHATIAN',
   healthy: 'BRAND YANG SEHAT — QUIET CARD',
@@ -1888,7 +1888,7 @@ export default function HomePage() {
   const isB1 = demoStep === 'B1'
   const isB2 = demoStep === 'B2'
   const isC  = demoStep.startsWith('C')
-  const isC1 = demoStep === 'C1'
+  const _isC1 = demoStep === 'C1'
   const isC6 = demoStep === 'C6'
 
   // ── Effective tab ─────────────────────────────────────────────────
@@ -1922,7 +1922,7 @@ export default function HomePage() {
     MOCK_BRANDS
 
   // Brand selected in Overview (highlights card)
-  const overviewSelectedBrand: Brand | null =
+  const _overviewSelectedBrand: Brand | null =
     isB1 || isB2 ? MOCK_BRAND_ZERO_DATA :
     isC ? MOCK_BRANDS[0] :
     null
