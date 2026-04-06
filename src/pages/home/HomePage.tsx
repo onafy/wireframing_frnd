@@ -1657,93 +1657,6 @@ function YourToolsStrip({ tools }: { tools: YourTool[] }) {
 // ── Today's Schedule ────────────────────────────────────────────────
 type ScheduleState = 'unauthorized' | 'no-meetings' | 'has-meetings'
 
-function TodaySchedule({ state, meetings }: { state: ScheduleState; meetings: Meeting[] }) {
-  return (
-    <div className="h-full">
-      <p className="text-white/25 text-[11px] uppercase tracking-widest font-medium mb-3">Today's Schedule</p>
-
-      {state === 'unauthorized' && (
-        <div className="border border-white/[0.06] rounded-2xl p-5 flex flex-col items-center text-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
-            <Calendar size={16} className="text-white/30" />
-          </div>
-          <div>
-            <p className="text-white/70 text-sm font-medium mb-1">Connect your calendar</p>
-            <p className="text-white/30 text-[11px] leading-relaxed">Sync your Lark calendar to see upcoming meetings, auto-generate prep materials, and join calls directly from frndOS.</p>
-          </div>
-          <button className="flex items-center gap-1.5 border border-white/20 rounded-xl px-4 py-2 text-xs font-medium text-white/70 hover:bg-white/[0.06] hover:border-white/30 transition-all">
-            Authorize Lark <ArrowRight size={11} />
-          </button>
-        </div>
-      )}
-
-      {state === 'no-meetings' && (
-        <div className="border border-white/[0.06] rounded-2xl p-5 flex flex-col items-center text-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
-            <CheckCircle2 size={16} className="text-white/30" />
-          </div>
-          <div>
-            <p className="text-white/70 text-sm font-medium">No meetings today</p>
-            <p className="text-white/25 text-[11px] mt-1">Your schedule is clear.</p>
-          </div>
-        </div>
-      )}
-
-      {state === 'has-meetings' && (
-        <div className="space-y-0">
-          {meetings.map((meeting) => {
-            const isPast = meeting.status === 'past'
-            const isActive = meeting.status === 'active'
-            const isUpcoming = meeting.status === 'upcoming'
-            return (
-              <div
-                key={meeting.id}
-                className={`flex gap-2 py-2 border-b border-white/[0.04] last:border-0 ${isPast ? 'opacity-40' : ''}`}
-              >
-                <div className="shrink-0 text-right w-16">
-                  <p className="text-[11px] text-white/35 font-mono">{meeting.time}</p>
-                </div>
-                <div className="relative flex items-stretch">
-                  <div className={`w-0.5 rounded-full mr-3 ${isActive ? 'bg-[#4ade80]' : isUpcoming ? 'bg-[#facc15]' : 'bg-white/10'}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-white/75 text-xs font-medium truncate">{meeting.title}</p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <p className="text-white/25 text-[10px]">{meeting.brand}</p>
-                        <span className="text-white/10 text-[10px]">·</span>
-                        <p className="text-white/20 text-[10px]">{meeting.attendees} attendees</p>
-                      </div>
-                    </div>
-                    <div className="shrink-0 flex flex-col items-end gap-1">
-                      {isUpcoming && meeting.startsInMin && (
-                        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-[#2e2a1a] text-[#facc15] border border-[#4a421d]">
-                          Starts in {meeting.startsInMin} min
-                        </span>
-                      )}
-                      {isActive && (
-                        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-[#1a2e1a] text-[#4ade80] border border-[#2d4a2d]">
-                          Live
-                        </span>
-                      )}
-                      {meeting.hasLink && !isPast && (
-                        <button className="text-[10px] text-white/40 hover:text-white/70 border border-white/10 hover:border-white/20 rounded px-2 py-0.5 transition-all">
-                          Join
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </div>
-  )
-}
-
 // ── Recent Work All Modal ────────────────────────────────────────────
 function RecentWorkModal({ items, pinned, onTogglePin, onClose, showBrand }: {
   items: RecentItem[]
@@ -1949,39 +1862,6 @@ function DailyOverview({ meetings, calendarAuthorized = true }: { meetings: Meet
   )
 }
 
-// ── Schedule Chips (compact, State A) ────────────────────────────
-function ScheduleChips({ meetings }: { meetings: Meeting[] }) {
-  return (
-    <div className="flex flex-wrap gap-4">
-      {meetings.map((meeting) => {
-        const isPast = meeting.status === 'past'
-        const isActive = meeting.status === 'active'
-        return (
-          <div
-            key={meeting.id}
-            className={`flex items-center gap-3 px-4 py-2 rounded-lg border text-xs ${
-              isActive
-                ? 'bg-[#2a2a2a] border-white/20 text-white'
-                : isPast
-                ? 'bg-[#1c1c1c] border-white/5 text-white/30'
-                : 'bg-[#1c1c1c] border-white/5 text-white/60'
-            }`}
-          >
-            <span className={`font-bold ${isPast ? 'text-white/30' : 'text-white'}`}>{meeting.time}</span>
-            {isPast ? (
-              <span className="italic text-white/30">{meeting.title}</span>
-            ) : (
-              <span className="font-medium">{meeting.title}</span>
-            )}
-            {isActive && (
-              <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[8px] font-bold uppercase tracking-widest">Live</span>
-            )}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
 
 // ── Recent Work Gallery (Focus tab) ───────────────────────────────
 function RecentWorkGallery() {
@@ -2454,11 +2334,7 @@ export default function HomePage() {
 
 
   // Calendar
-  const calendarState: ScheduleState =
-    (isA1 || isA2) ? 'unauthorized' :
-    isB1 ? 'unauthorized' :
-    isB2 ? 'has-meetings' :
-    'has-meetings'
+
 
   const meetings = isB2 || isC ? MOCK_MEETINGS_ACTIVE : MOCK_MEETINGS
 
