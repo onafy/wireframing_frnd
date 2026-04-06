@@ -1654,8 +1654,6 @@ function YourToolsStrip({ tools }: { tools: YourTool[] }) {
 //   )
 // }
 
-// ── Today's Schedule ────────────────────────────────────────────────
-type ScheduleState = 'unauthorized' | 'no-meetings' | 'has-meetings'
 
 // ── Recent Work All Modal ────────────────────────────────────────────
 function RecentWorkModal({ items, pinned, onTogglePin, onClose, showBrand }: {
