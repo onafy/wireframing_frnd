@@ -9,7 +9,6 @@ import {
   Pin,
   PinOff,
   Calendar,
-  CalendarDays,
   ChevronRight,
   ChevronDown,
   ArrowRight,
@@ -26,6 +25,8 @@ import {
   Brush,
   Terminal,
   FolderOpen,
+  LayoutDashboard,
+  Megaphone,
 } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -1800,91 +1801,149 @@ function RecentWorkModal({ items, pinned, onTogglePin, onClose, showBrand }: {
   )
 }
 
-// ── Schedule Timeline (Focus tab) ─────────────────────────────────
-function ScheduleTimeline({ meetings }: { meetings: Meeting[] }) {
+// ── Daily Overview (Focus tab) ─────────────────────────────────────
+function DailyOverview({ meetings, calendarAuthorized = true }: { meetings: Meeting[]; calendarAuthorized?: boolean }) {
   const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()
+
+  const announcements = [
+    {
+      title: 'Brand Kit 3.0 is live',
+      desc: 'New templates, icons & color palettes available now.',
+      time: '2d ago',
+    },
+    {
+      title: 'Survey feature beta',
+      desc: 'Try the new AI-powered survey builder in Studio.',
+      time: '4d ago',
+    },
+    {
+      title: 'Onboarding guide',
+      desc: 'New 5-step workflow for first-time users.',
+      time: '1w ago',
+    },
+  ]
 
   return (
     <div>
-      {/* Date label */}
-      <div className="flex items-center justify-end mb-6 pr-4">
-        <span className="text-[10px] text-white/35 uppercase tracking-widest font-label">{today}</span>
+
+      {/* 12-col grid: 8-col timeline + 4-col announcements */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* ── Left: Schedule Timeline ── */}
+         {/* Date label */}
+        <div className="lg:col-span-7 relative">
+          <div className="flex items-center justify-end mb-6 pr-4">
+        <span className="text-[15px] text-white/35 uppercase tracking-widest font-label">{today}</span>
       </div>
-
-      {/* Timeline */}
-      <div className="relative pl-20 md:pl-28 space-y-6">
-        {/* Vertical line */}
-        <div className="absolute left-[4.5rem] md:left-[7.5rem] top-0 bottom-0 w-[1px] bg-white/10" />
-
-        {meetings.map((meeting) => {
-          const isPast = meeting.status === 'past'
-          const isActive = meeting.status === 'active'
-          const isExternal = meeting.isExternal
-          const isFocus = meeting.category === 'FOCUS'
-
-          const dotColor = isActive
-            ? 'bg-white ring-4 ring-[#131313] shadow-[0_0_10px_rgba(255,255,255,0.4)]'
-            : isPast
-            ? 'bg-white/30 ring-4 ring-[#131313]'
-            : 'bg-white/50 ring-4 ring-[#131313]'
-
-          const cardBg = isActive ? 'bg-[#1c1c1c]' : 'bg-[#1c1c1c]/60'
-
-          return (
-            <div key={meeting.id} className="relative">
-              {/* Time label */}
-              <div className="absolute -left-20 md:-left-28 w-16 md:w-20 pt-1 text-right">
-                <span className="text-xs font-bold text-white">{meeting.time}</span>
+          {!calendarAuthorized ? (
+            /* Unauthorized state */
+            <div className="border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center text-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                <Calendar size={16} className="text-white/30" />
               </div>
-
-              {/* Dot */}
-              <div className={`absolute left-[4.1rem] md:left-[7.1rem] top-2 w-2 h-2 rounded-full ${dotColor}`} />
-
-              {/* Card */}
-              <div className={`ml-12 md:ml-20 p-4 rounded-lg border border-white/5 ${cardBg} hover:bg-[#2a2a2a] transition-all cursor-pointer group relative overflow-hidden`}>
-                {/* Focus glow */}
-                {isFocus && (
-                  <div className="absolute -right-16 -top-16 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
-                )}
-
-                <div className="flex items-start justify-between gap-4 mb-1">
-                  <div className="flex items-center gap-2">
-                    {meeting.category && (
-                      <span className={`text-[9px] uppercase tracking-widest font-bold ${isFocus ? 'bg-white text-black px-2 py-0.5 rounded-full' : 'text-white/35'}`}>
-                        {meeting.category}
-                      </span>
-                    )}
-                    {isExternal && (
-                      <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/10 text-white/60 uppercase tracking-widest font-bold">
-                        External
-                      </span>
-                    )}
-                  </div>
-                  {meeting.status === 'active' && (
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-white text-black uppercase tracking-widest">
-                      Live
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="text-sm font-bold text-white">{meeting.title}</h3>
-
-                {meeting.description && (
-                  <p className="text-[11px] text-white/40 mt-1 leading-relaxed max-w-md">{meeting.description}</p>
-                )}
-
-                {/* Attendees avatars */}
-                {meeting.attendeeAvatars && meeting.attendeeAvatars.length > 0 && (
-                  <div className="flex -space-x-2 mt-3">
-                    {meeting.attendeeAvatars.map((avatar, i) => (
-                      <img key={i} src={avatar} alt="" className="w-6 h-6 rounded-full border-2 border-[#1c1c1c]" />
-                    ))}
-                  </div>
-                )}
+              <div>
+                <p className="text-white/70 text-sm font-medium mb-1">Connect your calendar</p>
+                <p className="text-white/30 text-[11px] leading-relaxed">Sync your Lark calendar to see upcoming meetings, auto-generate prep materials, and join calls directly from frndOS.</p>
               </div>
+              <button className="flex items-center gap-1.5 border border-white/20 rounded-xl px-4 py-2 text-xs font-medium text-white/70 hover:bg-white/[0.06] hover:border-white/30 transition-all">
+                Authorize Lark <ArrowRight size={11} />
+              </button>
             </div>
-          )
-        })}
+          ) : (
+            /* Meetings timeline */
+            <div className="relative pl-12 md:pl-24">
+              {/* Vertical line */}
+              <div className="absolute left-[4.5rem] md:left-[8.6rem] top-0 bottom-0 w-[1px] border border-white/10" />
+              {meetings.map((meeting) => {
+                const isPast = meeting.status === 'past'
+                const isActive = meeting.status === 'active'
+                const isExternal = meeting.isExternal
+                const isFocus = meeting.category === 'FOCUS'
+
+                const dotColor = isActive
+                  ? 'bg-white ring-2 ring-[#1c1c1c]'
+                  : isPast
+                  ? 'bg-neutral-600 ring-2 ring-[#1c1c1c]'
+                  : 'bg-neutral-500 ring-2 ring-[#1c1c1c]'
+
+                const cardBg = isActive ? 'bg-[#1c1c1c]' : 'bg-[#1c1c1c]/60'
+
+                return (
+                  <div key={meeting.id} className="relative mb-8">
+                    {/* Time label */}
+                    <div className="absolute -left-12 md:-left-24 w-12 md:w-20 pt-1 text-right">
+                      <span className="text-xs font-bold text-white">{meeting.time}</span>
+                    </div>
+
+                    {/* Dot */}
+                    <div className={`absolute left-[4.1rem] md:left-[2.4rem] top-2 w-2 h-2 rounded-full ${dotColor}`} />
+
+                    {/* Card */}
+                    <div className={`ml-12 md:ml-20 p-4 rounded-lg border border-white/5 ${cardBg} hover:bg-[#2a2a2a] transition-all cursor-pointer group relative overflow-hidden`}>
+                      {/* Focus glow */}
+                      {isFocus && (
+                        <div className="absolute -right-16 -top-16 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
+                      )}
+
+                      <div className="flex items-start justify-between gap-4 mb-1">
+                        <div className="flex items-center gap-2">
+                          {meeting.category && (
+                            <span className={`text-[9px] uppercase tracking-widest font-bold ${isFocus ? 'bg-white text-black px-2 py-0.5 rounded-full' : 'text-white/35'}`}>
+                              {meeting.category}
+                            </span>
+                          )}
+                          {isExternal && (
+                            <span className="text-[8px] px-2 py-0.5 rounded-full bg-white/10 text-white/60 uppercase tracking-widest font-bold">
+                              External
+                            </span>
+                          )}
+                        </div>
+                        {meeting.status === 'active' && (
+                          <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-white text-black uppercase tracking-widest">
+                            Live
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="text-sm font-bold text-white">{meeting.title}</h3>
+
+                      {meeting.description && (
+                        <p className="text-[11px] text-white/40 mt-1 leading-relaxed max-w-md">{meeting.description}</p>
+                      )}
+
+                      {/* Attendees avatars */}
+                      {meeting.attendeeAvatars && meeting.attendeeAvatars.length > 0 && (
+                        <div className="flex -space-x-2 mt-3">
+                          {meeting.attendeeAvatars.map((avatar, i) => (
+                            <img key={i} src={avatar} alt="" className="w-6 h-6 rounded-full border-2 border-[#1c1c1c]" />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ── Right: Announcements ── */}
+        <div className="lg:col-span-5 flex flex-col gap-4">
+          <p className="text-[16px] text-white/50 uppercase tracking-widest font-medium mb-1">Updates &amp; Announcements</p>
+          {announcements.map((item, i) => (
+            <div key={i} className="p-4 rounded-lg bg-[#1c1c1c]/60 border border-white/5 hover:bg-[#1c1c1c] transition-colors cursor-pointer group">
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <h4 className="text-xs font-bold text-white leading-tight">{item.title}</h4>
+                <span className="shrink-0 text-[9px] text-white/25 mt-0.5">{item.time}</span>
+              </div>
+              <p className="text-[10px] text-white/35 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+          <button className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/60 transition-colors mt-1 group">
+            <Megaphone size={12} />
+            <span>View Archive</span>
+            <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -1926,89 +1985,116 @@ function ScheduleChips({ meetings }: { meetings: Meeting[] }) {
 
 // ── Recent Work Gallery (Focus tab) ───────────────────────────────
 function RecentWorkGallery() {
-  // 4-col gallery card grid — matches Atelier design
   const cards = [
     {
       imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD5g6jB7F-Y1CVh7zY8iYyc-dP7JBJZOKkr7vMWD7DykzBiHKQAIK8_q-Ws_dNJvXpCcXtZK6QKN2GttATm3Q62Q0s0uv9SEY0wokbv0yKhGafWkeX04mgpYVrnPwNSGOe_z0vHcvpgoDOOeAvjK4iKwAUSBUkfCDaRTpF68JAcS6JyY3h7PiyHIHeXt_KeLLHIjhQbNfYCgXcP_HepO1sqOO07g8-wSUexn6O-HbJU8soO_lkfwKfzlgdVsbhvndXrRZHMrLZzDlGS',
       status: 'In Progress',
-      statusColor: 'text-white border-white/10 bg-black/60',
+      statusColor: 'text-white border-white/20 bg-black/70',
       title: 'Lumina Landing Page',
       toolLabel: 'Creative Brief',
       timeAgo: '2h ago',
-      hasImage: true,
     },
     {
       imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiEEM_AoSFHE--y3pKAfvPW1rSm1gCq0T0ZD9NcWO02sPdX8ztvhh_nyPw_ZdRmfRLtqIsU8a6-lJKeEBTyNuVx_XxnZA0MJ9AmJxfg1cMHSAwo7iVR_YlWUWIVWH_T-64nYXAG8IJ1YpOvY27A-MzX2Lw175y37IZ9m7PGkyu5fJzNTBYL72foAlFQ91aWFwRSNdSzHGp8g3LmHgcqfvpVybyQEk1Y5DuHdYzgHpWXc1WDc-sKALPM-pSBKkBU6S-n8iROVPSRjKF',
       status: 'Draft',
-      statusColor: 'text-neutral-400 border-white/10 bg-black/60',
+      statusColor: 'text-neutral-300 border-white/20 bg-black/70',
       title: 'Monolith Brand Book',
       toolLabel: 'KV Generator',
       timeAgo: '1d ago',
-      hasImage: true,
     },
     {
       imageUrl: null,
       status: 'Ready',
-      statusColor: 'text-emerald-400 border-emerald-500/10 bg-black/60',
+      statusColor: 'text-emerald-400 border-emerald-500/20 bg-black/70',
       title: 'Aetherial Form Study 01',
       toolLabel: 'Image Editor',
       timeAgo: '3d ago',
-      hasImage: false,
     },
     {
       imageUrl: null,
       status: 'Review',
-      statusColor: 'text-amber-400 border-amber-500/10 bg-black/60',
+      statusColor: 'text-amber-400 border-amber-500/20 bg-black/70',
       title: 'Glass UI Component',
       toolLabel: 'Survey',
       timeAgo: '1w ago',
-      hasImage: false,
     },
   ]
 
+  const [primary, ...secondary] = cards
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {cards.map((card, i) => (
-        <div
-          key={i}
-          className="group relative bg-[#1c1c1c] rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-500 cursor-pointer"
-        >
-          {/* Image / icon area */}
-          <div className="aspect-[4/3] relative overflow-hidden">
-            {card.hasImage && card.imageUrl ? (
-              <img
-                src={card.imageUrl}
-                alt={card.title}
-                className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
-              />
-            ) : (
-              <div className="w-full h-full bg-neutral-900 flex items-center justify-center">
-                <span className="text-neutral-700 text-6xl group-hover:text-white/30 transition-colors">
-                  {i === 2 ? '◐' : '⊞'}
-                </span>
-              </div>
-            )}
-            {/* Status badge */}
-            <div className="absolute top-4 left-4">
-              <span className={`px-2 py-1 rounded backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border ${card.statusColor}`}>
-                {card.status}
-              </span>
+    <div className="grid grid-cols-12 gap-4">
+      {/* Large primary card — col-span-8 */}
+      {primary && (
+        <div className="col-span-12 lg:col-span-8 group relative rounded-xl overflow-hidden cursor-pointer">
+          {/* Full-bleed image */}
+          {primary.imageUrl ? (
+            <img
+              src={primary.imageUrl}
+              alt={primary.title}
+              className="w-full h-64 object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+            />
+          ) : (
+            <div className="w-full h-64 bg-neutral-900 flex items-center justify-center">
+              <span className="text-neutral-700 text-8xl group-hover:text-white/20 transition-colors">◐</span>
             </div>
+          )}
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+          {/* Status badge */}
+          <div className="absolute top-4 left-4">
+            <span className={`px-3 py-1 rounded backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border ${primary.statusColor}`}>
+              {primary.status}
+            </span>
           </div>
-          {/* Card body */}
-          <div className="p-4">
-            <div className="flex justify-between items-start mb-0.5">
-              <h4 className="text-sm font-bold text-white leading-tight">{card.title}</h4>
-              <span className="text-neutral-500 hover:text-white cursor-pointer transition-colors shrink-0 ml-2">⁝</span>
-            </div>
+          {/* Title + subtitle */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <h4 className="text-lg font-bold text-white mb-0.5">{primary.title}</h4>
             <div className="flex items-center gap-2">
-              <p className="text-[10px] text-neutral-500 uppercase tracking-widest">{card.toolLabel}</p>
-              <span className="text-white/20 text-[9px]">·</span>
-              <p className="text-[10px] text-neutral-600">{card.timeAgo}</p>
+              <p className="text-[10px] text-white/50 uppercase tracking-widest">{primary.toolLabel}</p>
+              <span className="text-white/30 text-[9px]">·</span>
+              <p className="text-[10px] text-white/40">{primary.timeAgo}</p>
             </div>
           </div>
         </div>
-      ))}
+      )}
+
+      {/* Secondary cards — col-span-4, stacked */}
+      <div className="col-span-12 lg:col-span-4 flex flex-col gap-4">
+        {secondary.map((card, i) => (
+          <div key={i} className="group relative rounded-xl overflow-hidden cursor-pointer flex-1">
+            {/* Full-bleed image */}
+            {card.imageUrl ? (
+              <img
+                src={card.imageUrl}
+                alt={card.title}
+                className="w-full h-28 object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+              />
+            ) : (
+              <div className="w-full h-28 bg-neutral-900 flex items-center justify-center">
+                <span className="text-neutral-700 text-5xl group-hover:text-white/20 transition-colors">{i === 0 ? '◐' : '⊞'}</span>
+              </div>
+            )}
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+            {/* Status badge */}
+            <div className="absolute top-3 left-3">
+              <span className={`px-2 py-0.5 rounded backdrop-blur-md text-[8px] font-bold uppercase tracking-widest border ${card.statusColor}`}>
+                {card.status}
+              </span>
+            </div>
+            {/* Title + subtitle */}
+            <div className="absolute bottom-3 left-3 right-3">
+              <h4 className="text-sm font-bold text-white mb-0.5 leading-tight">{card.title}</h4>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[9px] text-white/50 uppercase tracking-widest">{card.toolLabel}</p>
+                <span className="text-white/30 text-[8px]">·</span>
+                <p className="text-[9px] text-white/40">{card.timeAgo}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -2548,19 +2634,15 @@ export default function HomePage() {
                   <YourToolsStrip tools={MOCK_YOUR_TOOLS} />
                 </AccordionItem>
               )}
-              {/* Today's Schedule */}
+              {/* Daily Overview */}
               {showSchedule && (
                 <AccordionItem
-                  title="Today's Schedule"
-                  icon={<CalendarDays size={18} />}
+                  title="Daily Overview"
+                  icon={<LayoutDashboard size={18} />}
                   variant="primary"
-                  defaultOpen={false}
+                  defaultOpen={true}
                 >
-                  {calendarState === 'unauthorized' ? (
-                    <TodaySchedule state={calendarState} meetings={meetings} />
-                  ) : (
-                    <ScheduleChips meetings={meetings} />
-                  )}
+                  <DailyOverview meetings={meetings} calendarAuthorized={!(isA1 || isA2)} />
                 </AccordionItem>
               )}
               {/* Recent Work */}
@@ -2630,14 +2712,14 @@ export default function HomePage() {
                       </AccordionItem>
                     )}
 
-                    {/* Today's Schedule — primary, expanded */}
+                    {/* Daily Overview — primary, expanded */}
                     <AccordionItem
-                      title="Today's Schedule"
-                      icon={<CalendarDays size={18} />}
+                      title="Daily Overview"
+                      icon={<LayoutDashboard size={18} />}
                       variant="primary"
                       defaultOpen={true}
                     >
-                      <ScheduleTimeline meetings={meetings} />
+                      <DailyOverview meetings={meetings} />
                     </AccordionItem>
 
                     {/* Recent Work — primary, collapsed */}
