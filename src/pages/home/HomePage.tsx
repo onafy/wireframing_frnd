@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Bell,
   Search,
@@ -32,7 +32,6 @@ import {
 // ── Types ──────────────────────────────────────────────────────────
 type VelocityLabel = 'Rising Velocity' | 'Emerging Velocity' | 'Peaking Velocity'
 type BrandStatus = 'red' | 'yellow' | 'green'
-type HomeTab = 'overview' | 'focus'
 
 interface Meeting {
   id: string
@@ -148,11 +147,6 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '7 assets created · 12 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'red', value: '72', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'yellow', value: '14 surveys',
-        researchProgress: { total: 14, responseRate: 71, completionRate: 86, avgCtr: 1.4, verdict: 'needs-push', trend: 'up' }
-      },
       {
         label: 'Insights', status: 'yellow', value: '',
         insights: [
@@ -176,11 +170,7 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '3 assets created · 4 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'yellow', value: '88', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'green', value: '8 surveys',
-        researchProgress: { total: 8, responseRate: 75, completionRate: 91, avgCtr: 2.1, verdict: 'healthy', trend: 'steady' }
-      },
+    
       {
         label: 'Insights', status: 'red', value: '',
         insights: [
@@ -202,11 +192,7 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '5 assets created · 8 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'green', value: '100', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'green', value: '5 surveys',
-        researchProgress: { total: 5, responseRate: 100, completionRate: 100, avgCtr: 3.8, verdict: 'healthy', trend: 'up' }
-      },
+      
       {
         label: 'Insights', status: 'green', value: '',
         insights: [
@@ -224,8 +210,6 @@ const MOCK_BRANDS: Brand[] = [
     activeCampaigns: 0,
     hasActivity: false,
     pillars: [
-      { label: 'Studio', status: 'green', value: '100', sub: 'brand profile progress' },
-      { label: 'Research', status: 'inactive', value: '0 surveys', researchProgress: { total: 0, responseRate: 0, verdict: 'critical' } },
       { label: 'Insights', status: 'inactive', value: '' },
     ]
   },
@@ -241,11 +225,6 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '14 assets created · 22 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'green', value: '100', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'yellow', value: '22 surveys',
-        researchProgress: { total: 22, responseRate: 68, completionRate: 74, avgCtr: 2.7, verdict: 'needs-push', trend: 'down' }
-      },
       {
         label: 'Insights', status: 'yellow', value: '',
         insights: [
@@ -269,11 +248,6 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '1 assets created · 2 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'red', value: '76', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'yellow', value: '3 surveys',
-        researchProgress: { total: 3, responseRate: 33, completionRate: 41, avgCtr: 4.2, verdict: 'needs-push', trend: 'down' }
-      },
       {
         label: 'Insights', status: 'yellow', value: '',
         insights: [
@@ -296,11 +270,6 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '0 assets created · 1 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'red', value: '54', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'red', value: '1 survey',
-        researchProgress: { total: 1, responseRate: 0, completionRate: 0, avgCtr: 0.9, verdict: 'critical', trend: 'down' }
-      },
       {
         label: 'Insights', status: 'red', value: '',
         insights: [
@@ -322,11 +291,6 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '4 assets created · 6 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'green', value: '95', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'green', value: '6 surveys',
-        researchProgress: { total: 6, responseRate: 100, completionRate: 100, avgCtr: 2.0, verdict: 'healthy', trend: 'up' }
-      },
       {
         label: 'Insights', status: 'green', value: '',
         insights: [
@@ -345,9 +309,7 @@ const MOCK_BRANDS: Brand[] = [
     reach: '—',
     hasActivity: false,
     pillars: [
-      { label: 'Studio', status: 'red', value: '61', sub: 'brand profile progress' },
-      { label: 'Research', status: 'inactive', value: '0 surveys', researchProgress: { total: 0, responseRate: 0, verdict: 'critical' } },
-      { label: 'Insights', status: 'inactive', value: '' },
+ { label: 'Insights', status: 'inactive', value: '' },
     ]
   },
   // 10. Tango Indonesia — yellow · guardrails 82% · research healthy · insights strong
@@ -364,11 +326,7 @@ const MOCK_BRANDS: Brand[] = [
     weeklyOutput: '9 assets created · 15 KV generated',
     hasActivity: true,
     pillars: [
-      { label: 'Studio', status: 'yellow', value: '82', sub: 'brand profile progress' },
-      {
-        label: 'Research', status: 'green', value: '9 surveys',
-        researchProgress: { total: 9, responseRate: 78, completionRate: 88, avgCtr: 3.1, verdict: 'healthy', trend: 'steady' }
-      },
+      
       {
         label: 'Insights', status: 'green', value: '',
         insights: [
@@ -589,171 +547,6 @@ function velocityBg(label: VelocityLabel) {
   return 'bg-[#2e2a1a] text-[#facc15] border-[#4a421d]'
 }
 
-function statusColor(status: BrandStatus) {
-  if (status === 'red') return { dot: 'bg-red-500', text: 'text-red-400', label: 'Needs Attention' }
-  if (status === 'yellow') return { dot: 'bg-yellow-500', text: 'text-yellow-400', label: 'In Progress' }
-  return { dot: 'bg-green-500', text: 'text-green-400', label: 'On Track' }
-}
-
-// ── Brand Selector ──────────────────────────────────────────────────
-function BrandSelector({
-  brands,
-  selected,
-  onSelect,
-}: {
-  brands: Brand[]
-  selected: Brand | null
-  onSelect: (b: Brand | null) => void
-}) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
-
-  const activeBrands = brands.filter((b) => b.hasActivity)
-  const zeroBrands = brands.filter((b) => !b.hasActivity)
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 text-sm font-medium text-white/50 hover:bg-white/[0.05] px-3 py-2 rounded-xl transition-colors"
-      >
-        <span>{selected?.name ?? 'Select brand'}</span>
-        <ChevronDown size={13} className={`text-white/30 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-
-      {open && (
-        <div className="absolute top-full left-0 mt-1 w-56 bg-[#111] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden">
-          {/* Active brands */}
-          {activeBrands.map((brand) => {
-            const sc = statusColor(brand.status)
-            return (
-              <button
-                key={brand.id}
-                onClick={() => { onSelect(brand); setOpen(false) }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-white/[0.04] transition-colors ${selected?.id === brand.id ? 'bg-white/[0.04]' : ''}`}
-              >
-                <div className={`w-2 h-2 rounded-full shrink-0 ${sc.dot}`} />
-                <span className="text-white/60 text-xs">{brand.name}</span>
-              </button>
-            )
-          })}
-          {/* Zero-data brands */}
-          {zeroBrands.length > 0 && (
-            <>
-              <div className="border-t border-white/[0.06]" />
-              {zeroBrands.map((brand) => (
-                <button
-                  key={brand.id}
-                  onClick={() => { onSelect(brand); setOpen(false) }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-white/[0.04] transition-colors ${selected?.id === brand.id ? 'bg-white/[0.04]' : ''}`}
-                >
-                  <div className="w-2 h-2 rounded-full bg-white/20 shrink-0" />
-                  <span className="text-white/40 text-xs">{brand.name}</span>
-                </button>
-              ))}
-            </>
-          )}
-          {/* Divider */}
-          <div className="border-t border-white/[0.06]" />
-          {/* Playground */}
-          <button
-            onClick={() => { onSelect(null); setOpen(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-white/[0.04] transition-colors"
-          >
-            <div className="w-2 h-2 rounded-full bg-white/10 shrink-0" />
-            <span className="text-white/30 text-xs">Playground</span>
-          </button>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ── Tab Toggle ──────────────────────────────────────────────────────
-function TabToggle({
-  activeTab,
-  onTabChange,
-  selectedBrand,
-  onBrandSelect,
-  brands,
-}: {
-  activeTab: HomeTab
-  onTabChange: (tab: HomeTab) => void
-  selectedBrand: Brand | null
-  onBrandSelect: (b: Brand | null) => void
-  brands: Brand[]
-}) {
-  const [brandDropOpen, setBrandDropOpen] = useState(false)
-  const brandDropRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (brandDropRef.current && !brandDropRef.current.contains(e.target as Node)) setBrandDropOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
-
-  return (
-    <div className="flex items-center gap-1">
-      <button
-        onClick={() => onTabChange('overview')}
-        className={`text-xs pb-0.5 px-3 py-1.5 rounded-lg transition-colors ${
-          activeTab === 'overview'
-            ? 'text-white/80 font-medium bg-white/[0.06]'
-            : 'text-white/35 hover:text-white/60'
-        }`}
-      >
-        Overview
-      </button>
-
-      <div className="relative" ref={brandDropRef}>
-        <button
-          onClick={() => {
-            if (activeTab !== 'focus') onTabChange('focus')
-            setBrandDropOpen((o) => !o)
-          }}
-          className={`flex items-center gap-1.5 text-xs pb-0.5 px-3 py-1.5 rounded-lg transition-colors ${
-            activeTab === 'focus'
-              ? 'text-white/80 font-medium bg-white/[0.06]'
-              : 'text-white/35 hover:text-white/60'
-          }`}
-        >
-          Focus: {selectedBrand?.name ?? 'Select brand'}
-          <ChevronDown size={10} className={`text-white/30 transition-transform ${brandDropOpen ? 'rotate-180' : ''}`} />
-        </button>
-
-        {brandDropOpen && (
-          <div className="absolute top-full left-0 mt-1 w-48 bg-[#111] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden">
-            {brands.map((brand) => {
-              const sc = statusColor(brand.status)
-              const isZero = !brand.hasActivity
-              return (
-                <button
-                  key={brand.id}
-                  onClick={() => { onBrandSelect(brand); setBrandDropOpen(false) }}
-                  className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-left hover:bg-white/[0.04] transition-colors ${selectedBrand?.id === brand.id ? 'bg-white/[0.04]' : ''}`}
-                >
-                  <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isZero ? 'bg-white/20' : sc.dot}`} />
-                  <span className={`text-xs ${isZero ? 'text-white/40' : 'text-white/60'}`}>{brand.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 // ── Brand Logo Helper ───────────────────────────────────────────────
 const BRAND_COLORS: Record<string, string> = {
   'ultra-milk':  '2a2a2a',
@@ -802,32 +595,64 @@ function BrandLogoImg({ brand, size = 48 }: { brand: Brand; size?: number }) {
 }
 
 // ── Overview Tab — Brand Cards Grid ─────────────────────────────────
+type BrandStatusFilter = 'all' | BrandStatus
+
+const BRANDS_PER_PAGE = 9
+
 function OverviewTab({
   brands,
-  zeroDataBrands,
   overviewMode,
   onSelectBrand,
 }: {
   brands: Brand[]
-  zeroDataBrands?: Brand[]
   overviewMode?: 'compact' | 'detailed'
-  onSelectBrand: (b: Brand | null) => void
+  onSelectBrand: (b: Brand) => void
 }) {
-  const activeBrands = brands.filter((b) => b.hasActivity)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<BrandStatusFilter>('all')
+  const [page, setPage] = useState(1)
 
-  // Group by status, then sort activeCampaigns descending
-  const sorted = [...activeBrands].sort((a, b) => {
+  // Compact (State B): show all brands including zero-data
+  // Detailed (State C): show only active brands
+  const visibleBrands = overviewMode === 'compact'
+    ? brands
+    : brands.filter((b) => b.hasActivity)
+
+  // Apply search + status filter
+  const filtered = visibleBrands.filter((b) => {
+    const matchesSearch = b.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || b.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
+
+  // Sort: zero-data brands always last; then red → yellow → green
+  const sorted = [...filtered].sort((a, b) => {
+    if (!a.hasActivity && b.hasActivity) return 1
+    if (!b.hasActivity && a.hasActivity) return -1
     if (a.status === 'red' && b.status !== 'red') return -1
     if (b.status === 'red' && a.status !== 'red') return 1
     if (a.status === 'yellow' && b.status === 'green') return -1
-    if (b.status === 'yellow' && a.status === 'green') return 1
+    if (b.status === 'yellow' && a.status !== 'green') return 1
     return b.activeCampaigns - a.activeCampaigns
   })
 
-  // Zero-data brand cards render separately at the bottom
-  const zeroBrands = zeroDataBrands ?? []
+  // Paginate
+  const totalPages = Math.max(1, Math.ceil(sorted.length / BRANDS_PER_PAGE))
+  const currentPage = Math.min(page, totalPages)
+  const paginated = sorted.slice((currentPage - 1) * BRANDS_PER_PAGE, currentPage * BRANDS_PER_PAGE)
 
-  if (activeBrands.length === 0 && zeroBrands.length === 0) {
+  // Reset to page 1 when filter changes
+  const handleSearchChange = (q: string) => {
+    setSearchQuery(q)
+    setPage(1)
+  }
+  const handleStatusChange = (s: BrandStatusFilter) => {
+    setStatusFilter(s)
+    setPage(1)
+  }
+
+  // Zero-data brand cards render separately at the bottom
+  if (filtered.length === 0) {
     return (
       <div className="border border-white/[0.06] rounded-2xl p-8 flex flex-col items-center text-center gap-3">
         <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
@@ -909,10 +734,58 @@ function OverviewTab({
   return (
     <div>
 
-      {/* Active brand grid — sorted red → yellow → green */}
-      {sorted.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
-          {sorted.map((brand) => (
+      {/* ── Filter Bar ── */}
+      <div className="flex flex-col gap-3 mb-6">
+        {/* Search input */}
+        <div className="relative">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search brands..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.03] border border-white/[0.07] rounded-xl text-white/60 text-xs placeholder-white/20 focus:outline-none focus:border-white/[0.14] focus:bg-white/[0.04] transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => handleSearchChange('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50 transition-colors"
+            >
+              <X size={12} />
+            </button>
+          )}
+        </div>
+
+        
+      </div>
+
+      {/* Empty state — no filter results */}
+      {sorted.length === 0 && (
+        <div className="border border-white/[0.06] rounded-2xl p-8 flex flex-col items-center text-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+            <Search size={16} className="text-white/25" />
+          </div>
+          <p className="text-white/40 text-sm font-medium">No brands match your filters.</p>
+          <p className="text-white/20 text-[11px]">Try a different search term or status filter.</p>
+          <button
+            onClick={() => { handleSearchChange(''); handleStatusChange('all') }}
+            className="mt-1 text-[11px] text-white/40 hover:text-white/60 transition-colors underline underline-offset-2"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
+
+      {/* Section heading */}
+      <div className="mb-5">
+        <h2 className="text-white/50 text-[11px] uppercase tracking-widest font-medium">Brand Overview</h2>
+        <p className="text-white/20 text-[10px] mt-1">Showing brands with activity in the last 3 months</p>
+      </div>
+
+      {/* Active brand grid — sorted red → yellow → green, paginated */}
+      {paginated.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {paginated.map((brand) => (
             overviewMode === 'detailed' ? (
               <BrandOverviewCard key={brand.id} brand={brand} onClick={() => onSelectBrand(brand)} />
             ) : (
@@ -922,55 +795,40 @@ function OverviewTab({
         </div>
       )}
 
-      {/* Zero-data brand cards */}
-      {zeroBrands.length > 0 && (
-        <>
-          {sorted.length > 0 && (
-            <div className="flex items-center gap-3 mt-10 mb-6">
-              <div className="flex-1 border-t border-white/[0.06]" />
-              <span className="text-white/15 text-[9px] uppercase tracking-widest">Pending Setup</span>
-              <div className="flex-1 border-t border-white/[0.06]" />
-            </div>
-          )}
-          <div className="grid grid-cols-4 gap-x-4 gap-y-16 pt-4">
-            {zeroBrands.map((brand) => (
-              <button
-                key={brand.id}
-                onClick={() => onSelectBrand(brand)}
-                className="group relative flex flex-col items-center border border-white/[0.06] rounded-2xl bg-white/[0.01] hover:bg-white/[0.04] hover:border-white/[0.10] transition-all duration-200 text-center px-5 pt-16 pb-5 opacity-60 hover:opacity-80"
-              >
-                {/* Floating logo badge */}
-                <div className="absolute left-1/2 -translate-x-1/2 -top-6 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden ring-2 ring-white/[0.08] ring-offset-2 ring-offset-[#161616]">
-                    <BrandLogoImg brand={brand} size={44} />
-                  </div>
-                </div>
-
-                {/* Title */}
-                <p className="text-white/60 text-xs font-semibold leading-tight">{brand.name}</p>
-
-                {/* Subtitle */}
-                <p className="text-white/20 text-[10px] mt-1">No active campaigns</p>
-
-                {/* Info strip — empty studio placeholder */}
-                <div className="w-full mt-4 bg-white/[0.03] rounded-xl px-4 py-3 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full border border-white/[0.06] flex items-center justify-center shrink-0 overflow-hidden">
-                    <BrandLogoImg brand={brand} size={36} />
-                  </div>
-                  <span className="text-white/20 text-sm">→</span>
-                  <div className="flex-1 text-left">
-                    <p className="text-[14px] font-semibold leading-none text-white/30">—</p>
-                    <p className="text-white/20 text-[9px] uppercase tracking-widest mt-0.5">Studio</p>
-                  </div>
-                </div>
-
-                {/* Body */}
-                <p className="text-white/15 text-[10px] mt-3 leading-relaxed px-1">No recent activity</p>
-              </button>
-            ))}
-          </div>
-        </>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.07] text-white/30 hover:text-white/60 hover:border-white/[0.14] disabled:opacity-20 disabled:cursor-not-allowed transition-all text-xs"
+          >
+            <ChevronRight size={12} className="rotate-180" />
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPage(p)}
+              className={`w-7 h-7 flex items-center justify-center rounded-lg text-[11px] transition-all ${
+                p === currentPage
+                  ? 'bg-white/[0.08] border border-white/[0.14] text-white/70'
+                  : 'border border-transparent text-white/30 hover:text-white/60 hover:bg-white/[0.04]'
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.07] text-white/30 hover:text-white/60 hover:border-white/[0.14] disabled:opacity-20 disabled:cursor-not-allowed transition-all text-xs"
+          >
+            <ChevronRight size={12} />
+          </button>
+        </div>
       )}
+
+
     </div>
   )
 }
@@ -983,7 +841,6 @@ interface BrandSignal {
   type: SignalType
   title: string
   desc?: string
-  cta?: string
 }
 
 // ── Brand Overview Card (Overview tab — cinematic glass layout) ─────────
@@ -1070,14 +927,6 @@ function BrandOverviewCard({ brand, onClick }: { brand: Brand; onClick: () => vo
         </div>
       </div>
 
-      {/* CTA */}
-      <button
-        className="mt-6 flex items-center justify-between group/btn bg-[#c6c6c7] text-[#3f4041] px-6 py-3 rounded-full font-bold text-sm w-full transition-all duration-300 hover:opacity-90"
-        onClick={(e) => { e.stopPropagation(); onClick() }}
-      >
-        {signals[0]?.cta ?? (isHealthy ? 'View Brand' : 'Review Brand')}
-        <span className="text-lg leading-none group-hover/btn:translate-x-1 transition-transform">→</span>
-      </button>
     </button>
   )
 }
@@ -1241,73 +1090,9 @@ function BrandSignalCard({ brand }: { brand: Brand }) {
     )
   }
 
-  function signalWrap(type: SignalType) {
-    if (type === 'critical') return 'bg-red-500/[0.07] border border-red-500/[0.20] rounded-xl p-4'
-    if (type === 'warning') return 'bg-yellow-500/[0.08] border border-yellow-500/[0.18] rounded-xl p-4'
-    return 'bg-white/[0.02] border border-white/[0.06] rounded-xl p-4'
-  }
 
-  function ctaColor(type: SignalType) {
-    if (type === 'critical') return 'text-red-400/80 hover:text-red-400'
-    if (type === 'warning') return 'text-yellow-400/80 hover:text-yellow-400'
-    return 'text-white/30 hover:text-white/50'
-  }
 
-  function titleColor(type: SignalType) {
-    return type === 'success' || type === 'empty' || type === 'watchout' ? 'text-white/60' : 'text-white/80'
-  }
-
-  const weeklyText = (() => {
-    if (!brand.weeklyOutput) return null
-    const m = brand.weeklyOutput.match(/(\d+)\s*assets? created/)
-    const k = brand.weeklyOutput.match(/(\d+)\s*KV generated/)
-    const n = (m ? parseInt(m[1]) : 0) + (k ? parseInt(k[1]) : 0)
-    return n > 0 ? `${n} assets generated this week` : null
-  })()
-
-  return (
-    <div className="border border-white/[0.07] rounded-2xl overflow-hidden">
-      {/* Brand header */}
-      <div className="px-5 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white/[0.07] border border-white/[0.08] flex items-center justify-center shrink-0">
-            <span className="text-white/50 text-[11px] font-semibold">{brand.name.charAt(0)}</span>
-          </div>
-          <span className="text-white/80 text-sm font-semibold">{brand.name}</span>
-        </div>
-        <button className="text-white/25 text-[11px] hover:text-white/50 transition-colors flex items-center gap-1">
-          Edit brand <ExternalLink size={10} />
-        </button>
-      </div>
-
-      {/* Signal items */}
-      <div className="px-4 pb-4 space-y-2">
-        {signals.map((s, i) => (
-          <div key={i} className={signalWrap(s.type)}>
-            <div className="flex items-start gap-3">
-              {signalIcon(s.type)}
-              <div className="flex-1 min-w-0">
-                <p className={`text-xs font-semibold leading-snug mb-0.5 ${titleColor(s.type)}`}>{s.title}</p>
-                <p className="text-[11px] text-white/35 leading-relaxed">{s.desc}</p>
-                {s.cta && (
-                  <button className={`mt-2 text-[11px] font-medium transition-colors ${ctaColor(s.type)}`}>
-                    {s.cta} →
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Footer */}
-      {weeklyText && (
-        <div className="px-5 py-3 border-t border-white/[0.05]">
-          <span className="text-white/25 text-[11px]">{weeklyText}</span>
-        </div>
-      )}
-    </div>
-  )
+  
 }
 
 // ── Focus Tab ──────────────────────────────────────────────────────
@@ -1712,30 +1497,137 @@ function RecentWorkModal({ items, pinned, onTogglePin, onClose, showBrand }: {
   )
 }
 
+// ── Announcement Modal ─────────────────────────────────────────────
+type AnnouncementBlock =
+  | { type: 'heading'; level: 2 | 3; text: string }
+  | { type: 'paragraph'; text: string }
+  | { type: 'image'; src: string; alt: string; caption?: string }
+  | { type: 'divider' }
+
+interface AnnouncementItem {
+  title: string
+  desc: string
+  time: string
+  blocks?: AnnouncementBlock[]
+}
+
+function AnnouncementModal({ item, onClose }: { item: AnnouncementItem; onClose: () => void }) {
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/60 z-50" onClick={onClose} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 pointer-events-none">
+        <div className="w-full max-w-4xl bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col" style={{ maxHeight: '90vh' }}>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.07] shrink-0">
+            <span className="text-white/40 text-[11px] uppercase tracking-widest">Announcement</span>
+            <button onClick={onClose} className="text-white/25 hover:text-white/60 transition-colors"><X size={14} /></button>
+          </div>
+          <div className="overflow-y-auto p-6 space-y-5 flex-1">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h2 className="text-xl font-bold text-white leading-tight">{item.title}</h2>
+              <span className="shrink-0 text-[11px] text-white/25 mt-1.5">{item.time}</span>
+            </div>
+
+            {/* Rich content blocks */}
+            {item.blocks ? (
+              item.blocks.map((block, i) => {
+                if (block.type === 'heading') {
+                  return block.level === 2 ? (
+                    <h3 key={i} className="text-base font-bold text-white/80 pt-1">{block.text}</h3>
+                  ) : (
+                    <h4 key={i} className="text-sm font-semibold text-white/70">{block.text}</h4>
+                  )
+                }
+                if (block.type === 'paragraph') {
+                  return <p key={i} className="text-sm text-white/50 leading-relaxed">{block.text}</p>
+                }
+                if (block.type === 'image') {
+                  return (
+                    <figure key={i} className="space-y-1.5">
+                      <img src={block.src} alt={block.alt} className="w-full rounded-xl object-cover" style={{ maxHeight: 320 }} />
+                      {block.caption && <figcaption className="text-[11px] text-white/25 text-center">{block.caption}</figcaption>}
+                    </figure>
+                  )
+                }
+                if (block.type === 'divider') {
+                  return <div key={i} className="border-t border-white/[0.07]" />
+                }
+                return null
+              })
+            ) : (
+              <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
+            )}
+          </div>
+          <div className="px-6 py-4 border-t border-white/[0.07] shrink-0">
+            <button
+              onClick={onClose}
+              className="px-5 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-white/90 transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 // ── Daily Overview (Focus tab) ─────────────────────────────────────
 function DailyOverview({ meetings, calendarAuthorized = true }: { meetings: Meeting[]; calendarAuthorized?: boolean }) {
   const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AnnouncementItem | null>(null)
 
-  const announcements = [
+  const announcements: AnnouncementItem[] = [
     {
       title: 'Brand Kit 3.0 is live',
       desc: 'New templates, icons & color palettes available now.',
       time: '2d ago',
+      blocks: [
+        { type: 'paragraph', text: 'Brand Kit 3.0 is here — and it\'s our biggest update yet. This release brings a complete overhaul of our template library, icon set, and color palette system to help your brand stay consistent across every touchpoint.' },
+        { type: 'heading', level: 2, text: 'What\'s New' },
+        { type: 'paragraph', text: 'We\'ve added 50+ production-ready templates across social media, presentations, digital ads, and print materials. Every template is built on our updated grid system and exports cleanly to Figma, Sketch, and PDF.' },
+        { type: 'image', src: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80', alt: 'Brand Kit 3.0 template preview', caption: 'Sample templates from Brand Kit 3.0 — now available in Studio' },
+        { type: 'heading', level: 3, text: 'Icon Set (200+ Icons)' },
+        { type: 'paragraph', text: 'The refreshed icon library covers UI, marketing, and product categories. All icons are outlined by default with a filled variant, available in 16px, 20px, 24px, and 32px sizes. Download individually or as a complete set.' },
+        { type: 'heading', level: 3, text: 'Color Palettes (12 New Systems)' },
+        { type: 'paragraph', text: 'Each system includes primary, secondary, accent, and neutral ramps — plus accessibility ratios printed on every swatch. Palettes are organized by brand personality: Bold, Calm, Playful, and Professional.' },
+        { type: 'divider' },
+        { type: 'paragraph', text: 'To access Brand Kit 3.0, open Studio → Brand Kit. Existing users will be prompted to migrate their current palette; this is non-destructive and can be undone at any time.' },
+      ],
     },
     {
       title: 'Survey feature beta',
       desc: 'Try the new AI-powered survey builder in Studio.',
       time: '4d ago',
+      blocks: [
+        { type: 'paragraph', text: 'We\'re launching a closed beta for the Survey feature — an AI-powered survey builder designed to replace manual questionnaire creation with intelligent, brief-to-survey automation.' },
+        { type: 'heading', level: 2, text: 'How It Works' },
+        { type: 'paragraph', text: 'Start by writing a one-paragraph research objective, e.g. "I want to understand brand perception among 18–25 year olds in Jakarta." Survey Builder will generate a 10–15 question instrument using validated scales, with suggested conditional logic branching built in.' },
+        { type: 'heading', level: 3, text: 'Key Capabilities' },
+        { type: 'paragraph', text: 'AI question generation from brief · Conditional logic for dynamic flows · Real-time sentiment analysis on open-ended responses · Export to CSV, PDF, or directly to Lark.' },
+        { type: 'divider' },
+        { type: 'paragraph', text: 'The beta is available to a limited group of users. If you\'d like early access, reach out to your account manager or message us in the #studio-beta Slack channel.' },
+      ],
     },
     {
-      title: 'Onboarding guide',
-      desc: 'New 5-step workflow for first-time users.',
+      title: 'New onboarding guide',
+      desc: 'A streamlined 5-step workflow for first-time users.',
       time: '1w ago',
+      blocks: [
+        { type: 'paragraph', text: 'We\'ve rebuilt the onboarding experience from scratch based on feedback from early users. The new 5-step guide walks new team members through the essentials without overwhelming them with features they don\'t need yet.' },
+        { type: 'heading', level: 2, text: 'The 5 Steps' },
+        { type: 'paragraph', text: '1. Connect your calendar — Sync Lark Calendar to enable meeting prep and agenda features. Takes under 2 minutes.\n2. Set up your first brand — Add your brand\'s name, category, and color system. Templates will be pre-populated.\n3. Explore core tools — A 3-minute interactive tour of Creative Brief, KV Generator, and Research.\n4. Invite team members — Add collaborators and assign roles (Admin, Editor, Viewer).\n5. Launch your first project — Create a campaign brief end-to-end in under 5 minutes.' },
+        { type: 'image', src: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80', alt: 'Onboarding flow preview', caption: 'The new 5-step onboarding guide — accessible from Help > Onboarding' },
+        { type: 'paragraph', text: 'Access the guide at any time from the Help menu in the top navigation bar. The guide resets automatically when a new workspace is created.' },
+      ],
     },
   ]
 
   return (
     <div>
+      {selectedAnnouncement && (
+        <AnnouncementModal item={selectedAnnouncement} onClose={() => setSelectedAnnouncement(null)} />
+      )}
 
       {/* 12-col grid: 8-col timeline + 4-col announcements */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -1841,7 +1733,7 @@ function DailyOverview({ meetings, calendarAuthorized = true }: { meetings: Meet
         <div className="lg:col-span-5 flex flex-col gap-4">
           <p className="text-[16px] text-white/50 uppercase tracking-widest font-medium mb-1">Updates &amp; Announcements</p>
           {announcements.map((item, i) => (
-            <div key={i} className="p-4 rounded-lg bg-[#1c1c1c]/60 border border-white/5 hover:bg-[#1c1c1c] transition-colors cursor-pointer group">
+            <div key={i} onClick={() => setSelectedAnnouncement(item)} className="p-4 rounded-lg bg-[#1c1c1c]/60 border border-white/5 hover:bg-[#1c1c1c] transition-colors cursor-pointer group">
               <div className="flex items-start justify-between gap-2 mb-1">
                 <h4 className="text-xs font-bold text-white leading-tight">{item.title}</h4>
                 <span className="shrink-0 text-[9px] text-white/25 mt-0.5">{item.time}</span>
@@ -1868,7 +1760,8 @@ function RecentWorkGallery() {
       imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD5g6jB7F-Y1CVh7zY8iYyc-dP7JBJZOKkr7vMWD7DykzBiHKQAIK8_q-Ws_dNJvXpCcXtZK6QKN2GttATm3Q62Q0s0uv9SEY0wokbv0yKhGafWkeX04mgpYVrnPwNSGOe_z0vHcvpgoDOOeAvjK4iKwAUSBUkfCDaRTpF68JAcS6JyY3h7PiyHIHeXt_KeLLHIjhQbNfYCgXcP_HepO1sqOO07g8-wSUexn6O-HbJU8soO_lkfwKfzlgdVsbhvndXrRZHMrLZzDlGS',
       status: 'In Progress',
       statusColor: 'text-white border-white/20 bg-black/70',
-      title: 'Lumina Landing Page',
+      title: 'Ultra Milk Landing Page',
+      brandName: 'Ultra Milk',
       toolLabel: 'Creative Brief',
       timeAgo: '2h ago',
     },
@@ -1876,7 +1769,8 @@ function RecentWorkGallery() {
       imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiEEM_AoSFHE--y3pKAfvPW1rSm1gCq0T0ZD9NcWO02sPdX8ztvhh_nyPw_ZdRmfRLtqIsU8a6-lJKeEBTyNuVx_XxnZA0MJ9AmJxfg1cMHSAwo7iVR_YlWUWIVWH_T-64nYXAG8IJ1YpOvY27A-MzX2Lw175y37IZ9m7PGkyu5fJzNTBYL72foAlFQ91aWFwRSNdSzHGp8g3LmHgcqfvpVybyQEk1Y5DuHdYzgHpWXc1WDc-sKALPM-pSBKkBU6S-n8iROVPSRjKF',
       status: 'Draft',
       statusColor: 'text-neutral-300 border-white/20 bg-black/70',
-      title: 'Monolith Brand Book',
+      title: 'Grab Indonesia Brand Book',
+      brandName: 'Grab Indonesia',
       toolLabel: 'KV Generator',
       timeAgo: '1d ago',
     },
@@ -1884,7 +1778,8 @@ function RecentWorkGallery() {
       imageUrl: null,
       status: 'Ready',
       statusColor: 'text-emerald-400 border-emerald-500/20 bg-black/70',
-      title: 'Aetherial Form Study 01',
+      title: 'Bank OCBC Social Kit',
+      brandName: 'Bank OCBC',
       toolLabel: 'Image Editor',
       timeAgo: '3d ago',
     },
@@ -1892,7 +1787,8 @@ function RecentWorkGallery() {
       imageUrl: null,
       status: 'Review',
       statusColor: 'text-amber-400 border-amber-500/20 bg-black/70',
-      title: 'Glass UI Component',
+      title: 'Indofood Campaign Assets',
+      brandName: 'Indofood',
       toolLabel: 'Survey',
       timeAgo: '1w ago',
     },
@@ -1925,6 +1821,14 @@ function RecentWorkGallery() {
               {primary.status}
             </span>
           </div>
+          {/* Brand name marker */}
+          {primary.brandName && (
+            <div className="absolute top-4 right-4">
+              <span className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-[9px] font-bold text-white/60 uppercase tracking-widest border border-white/10">
+                {primary.brandName}
+              </span>
+            </div>
+          )}
           {/* Title + subtitle */}
           <div className="absolute bottom-4 left-4 right-4">
             <h4 className="text-lg font-bold text-white mb-0.5">{primary.title}</h4>
@@ -1961,6 +1865,14 @@ function RecentWorkGallery() {
                 {card.status}
               </span>
             </div>
+            {/* Brand name marker */}
+            {card.brandName && (
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-[8px] font-bold text-white/50 uppercase tracking-widest border border-white/10">
+                  {card.brandName}
+                </span>
+              </div>
+            )}
             {/* Title + subtitle */}
             <div className="absolute bottom-3 left-3 right-3">
               <h4 className="text-sm font-bold text-white mb-0.5 leading-tight">{card.title}</h4>
@@ -2032,7 +1944,10 @@ function RecentWork({ items, empty, onStartTask, showBrand }: { items: RecentIte
                   {item.toolIcon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white/75 text-xs font-medium truncate">{item.title}</p>
+                  <p className="text-white/75 text-xs font-medium truncate">
+                    {item.title}
+                    <span className="ml-2 text-[8px] font-bold text-white/20 uppercase tracking-widest border border-white/10 rounded px-1.5 py-0.5">Playground</span>
+                  </p>
                   <p className="text-white/25 text-[10px] mt-0.5">
                     {showBrand && item.brandName ? (
                       <span className="inline-flex items-center gap-1">
@@ -2300,15 +2215,9 @@ export default function HomePage() {
   const isC  = demoStep.startsWith('C')
   const isC6 = demoStep === 'C6'
 
-  // ── Effective tab ─────────────────────────────────────────────────
-  // State A: no tabs — brand sections hidden, show pure playground layout
-  // State B/C: tabs visible, tab selection controlled by effectiveTab
-  const [effectiveTab, setEffectiveTab] = useState<HomeTab>('overview')
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null)
 
   useEffect(() => {
-    if (isB1) setEffectiveTab('overview')
-    else setEffectiveTab('focus')
     setSelectedBrand(null)
   }, [demoStep])
 
@@ -2323,11 +2232,11 @@ export default function HomePage() {
 
   // overviewBrands: brands shown in Overview grid
   // A1/A2: empty grid (no tabs in playground)
-  // B1: only zero-data brand card via OverviewTab zeroDataBrands prop
-  // B2/C: all active brands
+  // B1: zero-data brand rendered as compact BrandCard (not detailed BrandOverviewCard)
+  // B2/C: all active brands as detailed BrandOverviewCard
   const overviewBrands: Brand[] =
     isA1 || isA2 ? [] :
-    isB1 ? [] :
+    isB1 ? [MOCK_BRAND_ZERO_DATA] :
     MOCK_BRANDS
 
 
@@ -2385,12 +2294,9 @@ export default function HomePage() {
     if (idx > 0) setDemoStep(DEMO_STEP_ORDER[idx - 1])
   }
 
-  const handleBrandSelect = (brand: Brand | null) => {
+  const handleBrandSelect = (brand: Brand) => {
     setSelectedBrand(brand)
-    if (brand !== null) setEffectiveTab('focus')
   }
-
-  const showTabs = !isA1 && !isA2 // State A has no Overview/Focus tabs
 
   return (
     <div className="min-h-screen bg-[#161616] relative">
@@ -2454,15 +2360,6 @@ export default function HomePage() {
         {/* Main content */}
         <div className="max-w-5xl mx-auto px-8 py-6">
 
-          {/* Brand Selector — always visible */}
-          <div className="mb-4">
-            <BrandSelector
-              brands={allBrands}
-              selected={focusBrand}
-              onSelect={handleBrandSelect}
-            />
-          </div>
-
           {/* Cmd+K search bar */}
           <button
             onClick={() => setCmdOpen(true)}
@@ -2474,19 +2371,6 @@ export default function HomePage() {
               ⌘ K
             </kbd>
           </button>
-
-          {/* Tab Toggle — hidden in State A */}
-          {showTabs && (
-            <div className="mb-5">
-              <TabToggle
-                activeTab={effectiveTab}
-                onTabChange={setEffectiveTab}
-                selectedBrand={focusBrand}
-                onBrandSelect={handleBrandSelect}
-                brands={allBrands}
-              />
-            </div>
-          )}
 
           {/* ── STATE A: Playground (no tabs) ── */}
           {(isA1 || isA2) && (
@@ -2536,78 +2420,70 @@ export default function HomePage() {
             </HomeAccordion>
           )}
 
-          {/* ── STATE B / C: Brand Tabs ── */}
+          {/* ── STATE B / C: Brand Focus ── */}
           {(isB1 || isB2 || isC) && (
             <>
-              {/* Overview tab */}
-              {effectiveTab === 'overview' && (
-                <div className="mb-8">
-                  <OverviewTab
-                    brands={overviewBrands}
-                    zeroDataBrands={isB1 ? [MOCK_BRAND_ZERO_DATA] : undefined}
-                    overviewMode={isC ? 'detailed' : 'compact'}
-                    onSelectBrand={handleBrandSelect}
-                  />
-                </div>
-              )}
+              {/* Brand Overview Grid */}
+              <div className="mb-8">
+                <OverviewTab
+                  brands={overviewBrands}
+                  overviewMode={isC || isB1 || isB2 ? 'detailed' : 'compact'}
+                  onSelectBrand={handleBrandSelect}
+                />
+              </div>
 
-              {/* Focus tab */}
-              {effectiveTab === 'focus' && (
-                <>
-                  {/* Focus Card */}
-                  <div className="mb-5">
-                    <FocusTab
-                      brands={allBrands}
-                      selectedBrand={focusBrand}
-                      onOpenCmdK={() => setCmdOpen(true)}
-                      highlightGroup={demoGroup}
-                    />
-                  </div>
+              {/* Focus Card */}
+              <div className="mb-5">
+                <FocusTab
+                  brands={allBrands}
+                  selectedBrand={focusBrand}
+                  onOpenCmdK={() => setCmdOpen(true)}
+                  highlightGroup={demoGroup}
+                />
+              </div>
 
-                  {/* Today's Signal */}
-                  {showSignal && <TodaySignalCard signal={MOCK_SIGNAL} />}
+              {/* Today's Signal */}
+              {showSignal && <TodaySignalCard signal={MOCK_SIGNAL} />}
 
-                  <HomeAccordion>
-                    {/* Your Tools — primary, collapsed by default */}
-                    {showTools && (
-                      <AccordionItem
-                        title="Your Tools"
-                        icon={<Construction size={20} />}
-                        variant="primary"
-                        defaultOpen={false}
-                        action={
-                          <span className="flex items-center gap-1 text-sm text-white/40 hover:text-white transition-colors cursor-pointer">
-                            <span>View Library</span>
-                            <ArrowRight size={14} />
-                          </span>
-                        }
-                      >
-                        <YourToolsStrip tools={MOCK_YOUR_TOOLS} />
-                      </AccordionItem>
-                    )}
+              <HomeAccordion>
+                {/* Your Tools — primary, collapsed by default */}
+                {showTools && (
+                  <AccordionItem
+                    title="Your Tools"
+                    icon={<Construction size={20} />}
+                    variant="primary"
+                    defaultOpen={false}
+                    action={
+                      <span className="flex items-center gap-1 text-sm text-white/40 hover:text-white transition-colors cursor-pointer">
+                        <span>View Library</span>
+                        <ArrowRight size={14} />
+                      </span>
+                    }
+                  >
+                    <YourToolsStrip tools={MOCK_YOUR_TOOLS} />
+                  </AccordionItem>
+                )}
 
-                    {/* Daily Overview — primary, expanded */}
-                    <AccordionItem
-                      title="Daily Overview"
-                      icon={<LayoutDashboard size={18} />}
-                      variant="primary"
-                      defaultOpen={true}
-                    >
-                      <DailyOverview meetings={meetings} />
-                    </AccordionItem>
+                {/* Daily Overview — primary, expanded */}
+                <AccordionItem
+                  title="Daily Overview"
+                  icon={<LayoutDashboard size={18} />}
+                  variant="primary"
+                  defaultOpen={true}
+                >
+                  <DailyOverview meetings={meetings} />
+                </AccordionItem>
 
-                    {/* Recent Work — primary, collapsed */}
-                    <AccordionItem
-                      title="Recent Work"
-                      icon={<FolderOpen size={18} />}
-                      variant="primary"
-                      defaultOpen={false}
-                    >
-                      <RecentWorkGallery />
-                    </AccordionItem>
-                  </HomeAccordion>
-                </>
-              )}
+                {/* Recent Work — primary, collapsed */}
+                <AccordionItem
+                  title="Recent Work"
+                  icon={<FolderOpen size={18} />}
+                  variant="primary"
+                  defaultOpen={false}
+                >
+                  <RecentWorkGallery />
+                </AccordionItem>
+              </HomeAccordion>
             </>
           )}
 
