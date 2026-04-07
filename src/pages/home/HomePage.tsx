@@ -20,7 +20,6 @@ import {
   AlertTriangle,
   X,
   Maximize2,
-  ExternalLink,
   Construction,
   Brush,
   Terminal,
