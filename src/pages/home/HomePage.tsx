@@ -840,6 +840,7 @@ interface BrandSignal {
   type: SignalType
   title: string
   desc?: string
+  cta?: string
 }
 
 // ── Brand Overview Card (Overview tab — cinematic glass layout) ─────────
@@ -1058,9 +1059,6 @@ function classifyBrandFocus(brand: Brand): 'serious' | 'attention' | 'healthy' |
 const FOCUS_GROUP_ORDER = ['serious', 'attention', 'healthy', 'no-data'] as const
 type FocusGroup = typeof FOCUS_GROUP_ORDER[number]
 
-function BrandSignalCard() {
-  return null
-}
 
 // ── Focus Tab ──────────────────────────────────────────────────────
 function FocusTab({
@@ -1081,7 +1079,7 @@ function FocusTab({
     )
     const previewBrand = grouped[highlightGroup as FocusGroup]?.[0]
     if (!previewBrand) return null
-    return <BrandSignalCard brand={previewBrand} />
+    return null
   }
 
   // Normal mode: show only the selected brand
@@ -1097,7 +1095,7 @@ function FocusTab({
     )
   }
 
-  return <BrandSignalCard brand={selectedBrand} />
+  return null
 }
 
 // ── Notification Drawer ────────────────────────────────────────────
