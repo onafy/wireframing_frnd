@@ -841,6 +841,7 @@ interface BrandSignal {
   type: SignalType
   title: string
   desc?: string
+  cta?: string
 }
 
 // ── Brand Overview Card (Overview tab — cinematic glass layout) ─────────
@@ -1059,41 +1060,6 @@ function classifyBrandFocus(brand: Brand): 'serious' | 'attention' | 'healthy' |
 const FOCUS_GROUP_ORDER = ['serious', 'attention', 'healthy', 'no-data'] as const
 type FocusGroup = typeof FOCUS_GROUP_ORDER[number]
 
-function BrandSignalCard({ brand }: { brand: Brand }) {
-  const signals = deriveBrandSignals(brand)
-
-  function signalIcon(type: SignalType) {
-    if (type === 'critical') return (
-      <div className="w-[18px] h-[18px] rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-0.5">
-        <span className="text-red-400 text-[9px] font-black leading-none">!</span>
-      </div>
-    )
-    if (type === 'warning') return (
-      <div className="w-[18px] h-[18px] rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0 mt-0.5">
-        <span className="text-yellow-400 text-[9px] font-black leading-none">!</span>
-      </div>
-    )
-    if (type === 'watchout') return (
-      <div className="w-[18px] h-[18px] flex items-center justify-center shrink-0 mt-0.5">
-        <span className="text-yellow-500/50 text-base leading-none font-medium">×</span>
-      </div>
-    )
-    if (type === 'success') return (
-      <div className="w-[18px] h-[18px] flex items-center justify-center shrink-0 mt-0.5">
-        <CheckCircle2 size={14} className="text-green-400/60" />
-      </div>
-    )
-    return (
-      <div className="w-[18px] h-[18px] rounded-full bg-white/[0.06] flex items-center justify-center shrink-0 mt-0.5">
-        <span className="text-white/20 text-[11px] leading-none">—</span>
-      </div>
-    )
-  }
-
-
-
-  
-}
 
 // ── Focus Tab ──────────────────────────────────────────────────────
 function FocusTab({
@@ -1114,7 +1080,7 @@ function FocusTab({
     )
     const previewBrand = grouped[highlightGroup as FocusGroup]?.[0]
     if (!previewBrand) return null
-    return <BrandSignalCard brand={previewBrand} />
+    return null
   }
 
   // Normal mode: show only the selected brand
@@ -1130,7 +1096,7 @@ function FocusTab({
     )
   }
 
-  return <BrandSignalCard brand={selectedBrand} />
+  return null
 }
 
 // ── Notification Drawer ────────────────────────────────────────────
