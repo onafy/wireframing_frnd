@@ -1,6 +1,6 @@
 export type WireframeStatus = 'done' | 'pending'
-export type WireframeModule = 'Core' | 'Studio'
-export type WireframeIconKey = 'home' | 'layers'
+export type WireframeModule = 'Core' | 'Studio' | 'AskFRnD'
+export type WireframeIconKey = 'home' | 'layers' | 'layers'
 
 export interface WireframeEntry {
   id: string
@@ -40,6 +40,18 @@ export const wireframeRegistry: WireframeEntry[] = [
     icon: 'layers',
     sourcePaths: ['src/pages/studio/StudioPage.tsx', 'docs/prds/frndos-studio-home.md'],
     prdPath: 'docs/prds/frndos-studio-home.md',
+  },
+  {
+    id: 'askfrnd',
+    title: 'AskFRnD',
+    route: '/askfrnd',
+    module: 'AskFRnD',
+    description: 'AI execution layer with Cmd+K entry, side panel, Point & Ask, context chips, and workspace toggle.',
+    status: 'done',
+    owner: 'Alva',
+    icon: 'layers',
+    sourcePaths: ['src/pages/Askfrnd/askfrnd2.tsx'],
+    prdPath: undefined,
   },
 ]
 
