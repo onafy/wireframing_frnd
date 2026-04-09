@@ -1,18 +1,17 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Search, Command, Maximize2, Minimize2, PanelRightClose,
-  MoreHorizontal, Copy, MessageSquare, RefreshCcw, Edit2,
+  MoreHorizontal, Copy, RefreshCcw, Edit2,
   GitBranch, Send, Settings, Share, ChevronRight, FileText,
   Clock, Sparkles, History, Image as ImageIcon, Video, X, BarChart2,
-  Link2, Users, Download, Trash2, PenLine, ExternalLink,
-  Sliders, Brain, ChevronDown, Plus, MessageCircle, Layers,
-  FolderOpen, Palette, LayoutGrid, Upload, Globe, Lightbulb,
+  Link2, Users, Download, Trash2, PenLine,
+  Sliders, Brain, ChevronDown, MessageCircle, Layers,
+  Palette, LayoutGrid, Upload, Globe, Lightbulb,
   Eye, Zap, Timer, Link
 } from 'lucide-react';
 
 // ── Types ──────────────────────────────────────────────────────────
 type PanelState = 'closed' | 'narrow' | 'split' | 'fullscreen'
-type ActiveTab  = 'thread' | 'assets'
 type ModalType  = 'none' | 'settings' | 'history' | 'files' | 'share'
 type PageId     = 'chat' | 'brand-insight' | 'documents' | 'studio'
 
@@ -64,11 +63,11 @@ export default function AskFrndPage() {
   const [showModelPicker, setShowModelPicker] = useState(false)
   const [showAllModels, setShowAllModels] = useState(true)
   const [sharedMessageId, setSharedMessageId] = useState<number | null>(null)
-  const [activeTab, setActiveTab] = useState<ActiveTab>('thread')
+  const [, setActiveTab] = useState<string>('thread')
   const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false)
   const [selectedContext, setSelectedContext] = useState<Widget[]>([])
   const [activeModal, setActiveModal] = useState<ModalType>('none')
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  useState(false)
   const [activePage, setActivePage] = useState<PageId>('brand-insight')
 
   // Settings State
@@ -93,7 +92,7 @@ export default function AskFrndPage() {
   const [isAnswering, setIsAnswering] = useState(false)
 
   // History drawer — active brand context + per-brand collapsed state
-  const [activeBrand, setActiveBrand] = useState<string>('Nike')
+  const [activeBrand] = useState<string>('Nike')
   const [collapsedBrands, setCollapsedBrands] = useState<Set<string>>(new Set())
 
   // Per-message action menu state
@@ -525,13 +524,6 @@ export default function AskFrndPage() {
   }
 
   // ── Sidebar Navigation ──────────────────────────────────────────
-  const navItems: { icon: React.ReactNode; label: string; pageId: PageId; badge?: boolean }[] = [
-    { icon: <MessageCircle size={18} />, label: 'Chat', pageId: 'chat', badge: true },
-    { icon: <Layers size={18} />, label: 'Brand Insight', pageId: 'brand-insight' },
-    { icon: <FolderOpen size={18} />, label: 'Documents', pageId: 'documents' },
-    { icon: <Palette size={18} />, label: 'Studio', pageId: 'studio' },
-  ]
-
   const handlePageSwitch = (pageId: PageId) => {
     setActivePage(pageId)
     setHistoryPillarFilter(pageId === 'brand-insight' ? 'brand-insight' : 'all')
@@ -995,7 +987,7 @@ export default function AskFrndPage() {
 
             {/* Context badge */}
             <div className="flex items-center gap-2 px-4 py-2 border-b border-neutral-800/30">
-              <div className={`w-1.5 h-1.5 rounded-full ${activePage === 'brand-insight' ? 'bg-amber-400' : activePage === 'studio' ? 'bg-violet-400' : activePage === 'documents' ? 'bg-blue-400' : 'bg-neutral-400'}`} />
+              <div className={`w-1.5 h-1.5 rounded-full ${({ 'brand-insight': 'bg-amber-400', 'studio': 'bg-violet-400', 'documents': 'bg-blue-400', 'chat': 'bg-neutral-400' }[activePage] ?? 'bg-neutral-400')}`} />
               <span className="text-[10px] font-mono text-neutral-500 tracking-wider uppercase">{chatModeSubtitle[activePage]}</span>
             </div>
 
