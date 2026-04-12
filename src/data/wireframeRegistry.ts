@@ -48,11 +48,36 @@ export const wireframeRegistry: WireframeEntry[] = [
     module: 'AskFRnD',
     description: 'AI execution layer with Cmd+K entry, side panel, Point & Ask, context chips, and workspace toggle.',
     status: 'done',
-    owner: 'Alva',
+    owner: 'Novi',
     icon: 'layers',
     sourcePaths: ['src/pages/Askfrnd/askfrnd2.tsx'],
     prdPath: undefined,
   },
+  {
+    id: 'brand-knowledge',
+    title: 'Brand Knowledge',
+    route: '/brand-knowledge',
+    module: 'Core',
+    description: 'Brand Knowledge',
+    status: 'done',
+    owner: 'Novi',
+    icon: 'layers',
+    sourcePaths: ['src/pages/brand-knowledge/brand-knowledge.tsx'],
+    prdPath: undefined,
+  },
+  {
+    id: 'brand-assets',
+    title: 'Brand Assets',
+    route: '/brand-assets',
+    module: 'Core',
+    description: 'Brand Assets',
+    status: 'done',
+    owner: 'Novi',
+    icon: 'layers',
+    sourcePaths: ['src/pages/brand-knowledge/brand-assets.tsx'],
+    prdPath: undefined,
+  },
+
 ]
 
 export function getWireframeByRoute(pathname: string) {
