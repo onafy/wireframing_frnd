@@ -30,6 +30,17 @@ import {
   Sparkles,
   Globe,
   FileUp,
+  Crown,
+  Lightbulb,
+  Smile,
+  BookOpen,
+  Shield,
+  Heart,
+  Zap,
+  Compass,
+  Landmark,
+  Users,
+  type LucideIcon,
 } from 'lucide-react';
 
 type VaultChunk = {
@@ -43,6 +54,10 @@ type VaultChunk = {
   source: string;
   page: number | null;
   confidence: number;
+  type?: 'text' | 'file';
+  fileUrl?: string;
+  fileName?: string;
+  fileType?: string;
 };
 
 // --- MOCK DATA ---
@@ -52,7 +67,9 @@ const MOCK_EXTRACTION = {
     vision: "",
     target: "Urban professionals, 25-40, SES A/B, value-conscious but design-driven.",
     competitors: "Direct: Everlane, COS. Indirect: Zara, H&M.",
-    positioning: "Premium basics with architectural silhouettes at accessible price points."
+    positioning: "Premium basics with architectural silhouettes at accessible price points.",
+    purpose: "We exist to prove that design excellence should never be a privilege — it should be the standard.",
+    pillars: "Design, Accessibility, Craftsmanship"
   },
   identity: {
     colors: [
@@ -99,47 +116,58 @@ const MOCK_VAULT_CHUNKS: VaultChunk[] = [
   { id: 'vc-12', text: "Brand partnerships: only collaborate with brands that share our design-first philosophy. Avoid mass-market or discount-positioned partners. Co-branded items must meet our quality bar.", label: 'Partnership Rule', mapped: false, pillar: null, field: null, pinned: false, source: 'Q2_Brand_Book_Final.pdf', page: 36, confidence: 0.84 },
   { id: 'vc-13', text: "Email subject lines: max 6 words. No exclamation marks. Sentence case only. Emojis permitted only for seasonal campaigns (max 1 emoji per subject).", label: 'Tone Example', mapped: false, pillar: null, field: null, pinned: false, source: 'Q2_Brand_Book_Final.pdf', page: 26, confidence: 0.90 },
   { id: 'vc-14', text: "Notes from client call (2026-03-15): Client wants to explore a younger sub-brand targeting 18-24 in Q3. Keep this in mind for future tonality splits.", label: 'Manual Note', mapped: false, pillar: null, field: null, pinned: true, source: 'Manual entry', page: null, confidence: 1.0 },
+  { id: 'vc-15', text: "Primary Monogram Logo (Dark Background). Use when the background contrast ratio requires a white/light logo.", label: 'Asset Reference', mapped: false, pillar: null, field: null, pinned: true, source: 'Upload', page: null, confidence: 1.0, type: 'file', fileName: 'Primary_Logo_Dark.svg', fileType: 'image/svg+xml', fileUrl: 'https://placehold.co/400x400/000000/FFFFFF.png?text=Logo' },
+  { id: 'vc-16', text: "Autumn 2025 Campaign KV Reference. Demonstrates the moody, architectural aesthetic preferred for OOH.", label: 'Campaign Heritage', mapped: false, pillar: null, field: null, pinned: false, source: 'Upload', page: null, confidence: 0.95, type: 'file', fileName: 'Autumn_KV_Ref.pdf', fileType: 'application/pdf', fileUrl: 'https://placehold.co/400x600/111111/EEEEEE.png?text=PDF' }
 ];
 
-// Archetypes grouped into quadrants for the bubble map
-// Based on Margaret Mark & Carol S. Pearson's model
+// Archetype wheel data — 12 archetypes in circular layout
+type ArchetypeItem = {
+  name: string;
+  subtitle: string;
+  icon: LucideIcon;
+  angle: number;
+  quadrant: 'provide-structure' | 'spiritual-journey' | 'leave-a-mark' | 'connected-to-others';
+};
+
+const ARCHETYPE_WHEEL: ArchetypeItem[] = [
+  // Top-left: PROVIDE STRUCTURE (270°–360°)
+  { name: 'The Ruler', subtitle: 'Control', icon: Crown, angle: 330, quadrant: 'provide-structure' },
+  { name: 'The Caregiver', subtitle: 'Service', icon: Shield, angle: 300, quadrant: 'provide-structure' },
+  { name: 'The Everyman', subtitle: 'Belonging', icon: Users, angle: 270, quadrant: 'provide-structure' },
+  // Top-right: SPIRITUAL JOURNEY (0°–90°)
+  { name: 'The Creator', subtitle: 'Innovation', icon: Lightbulb, angle: 30, quadrant: 'spiritual-journey' },
+  { name: 'The Innocent', subtitle: 'Safety', icon: Smile, angle: 60, quadrant: 'spiritual-journey' },
+  { name: 'The Sage', subtitle: 'Knowledge', icon: BookOpen, angle: 90, quadrant: 'spiritual-journey' },
+  // Bottom-right: LEAVE A MARK (90°–180°)
+  { name: 'The Explorer', subtitle: 'Freedom', icon: Compass, angle: 120, quadrant: 'leave-a-mark' },
+  { name: 'The Outlaw', subtitle: 'Liberation', icon: Landmark, angle: 150, quadrant: 'leave-a-mark' },
+  { name: 'The Magician', subtitle: 'Power', icon: Sparkles, angle: 180, quadrant: 'leave-a-mark' },
+  // Bottom-left: CONNECTED TO OTHERS (180°–270°)
+  { name: 'The Hero', subtitle: 'Mastery', icon: Zap, angle: 210, quadrant: 'connected-to-others' },
+  { name: 'The Jester', subtitle: 'Pleasure', icon: Star, angle: 230, quadrant: 'connected-to-others' },
+  { name: 'The Lover', subtitle: 'Intimacy', icon: Heart, angle: 255, quadrant: 'connected-to-others' },
+];
+
+const QUADRANT_LABELS: { key: string; label: string; x: number; y: number }[] = [
+  { key: 'provide-structure', label: 'PROVIDE\nSTRUCTURE', x: 35, y: 42 },
+  { key: 'spiritual-journey', label: 'SPIRITUAL\nJOURNEY', x: 65, y: 42 },
+  { key: 'connected-to-others', label: 'CONNECTED\nTO OTHERS', x: 35, y: 62 },
+  { key: 'leave-a-mark', label: 'LEAVE A\nMARK', x: 65, y: 62 },
+];
+
+const QUADRANT_COLORS: Record<string, { glow: string; selected: string }> = {
+  'provide-structure': { glow: 'rgba(74,222,128,0.15)', selected: 'rgba(74,222,128,0.35)' },
+  'spiritual-journey': { glow: 'rgba(96,165,250,0.15)', selected: 'rgba(96,165,250,0.35)' },
+  'leave-a-mark': { glow: 'rgba(251,191,36,0.15)', selected: 'rgba(251,191,36,0.35)' },
+  'connected-to-others': { glow: 'rgba(244,114,182,0.15)', selected: 'rgba(244,114,182,0.35)' },
+};
+
+// Keep legacy reference for any other usage
 const ARCHETYPE_QUADRANTS = [
-  {
-    label: 'Freedom',
-    sublabel: 'Yearn to explore',
-    color: 'text-sky-400',
-    border: 'border-sky-400/20',
-    bg: 'bg-sky-400/5',
-    selectedBg: 'bg-sky-400/20 border-sky-400/50',
-    archetypes: ['The Innocent', 'The Explorer', 'The Sage'],
-  },
-  {
-    label: 'Ego',
-    sublabel: 'Leave a mark',
-    color: 'text-orange-400',
-    border: 'border-orange-400/20',
-    bg: 'bg-orange-400/5',
-    selectedBg: 'bg-orange-400/20 border-orange-400/50',
-    archetypes: ['The Hero', 'The Outlaw', 'The Magician'],
-  },
-  {
-    label: 'Social',
-    sublabel: 'Connect & belong',
-    color: 'text-rose-400',
-    border: 'border-rose-400/20',
-    bg: 'bg-rose-400/5',
-    selectedBg: 'bg-rose-400/20 border-rose-400/50',
-    archetypes: ['The Regular Guy', 'The Lover', 'The Jester'],
-  },
-  {
-    label: 'Order',
-    sublabel: 'Provide structure',
-    color: 'text-emerald-400',
-    border: 'border-emerald-400/20',
-    bg: 'bg-emerald-400/5',
-    selectedBg: 'bg-emerald-400/20 border-emerald-400/50',
-    archetypes: ['The Caregiver', 'The Creator', 'The Ruler'],
-  },
+  { label: 'Freedom', sublabel: 'Yearn to explore', color: 'text-sky-400', border: 'border-sky-400/20', bg: 'bg-sky-400/5', selectedBg: 'bg-sky-400/20 border-sky-400/50', archetypes: ['The Innocent', 'The Explorer', 'The Sage'] },
+  { label: 'Ego', sublabel: 'Leave a mark', color: 'text-orange-400', border: 'border-orange-400/20', bg: 'bg-orange-400/5', selectedBg: 'bg-orange-400/20 border-orange-400/50', archetypes: ['The Hero', 'The Outlaw', 'The Magician'] },
+  { label: 'Social', sublabel: 'Connect & belong', color: 'text-rose-400', border: 'border-rose-400/20', bg: 'bg-rose-400/5', selectedBg: 'bg-rose-400/20 border-rose-400/50', archetypes: ['The Regular Guy', 'The Lover', 'The Jester'] },
+  { label: 'Order', sublabel: 'Provide structure', color: 'text-emerald-400', border: 'border-emerald-400/20', bg: 'bg-emerald-400/5', selectedBg: 'bg-emerald-400/20 border-emerald-400/50', archetypes: ['The Caregiver', 'The Creator', 'The Ruler'] },
 ];
 
 const CONFIDENCE_SCORES = {
@@ -148,6 +176,8 @@ const CONFIDENCE_SCORES = {
   'dna.target': 0.87,
   'dna.competitors': 0.72,
   'dna.positioning': 0.94,
+  'dna.purpose': 0.83,
+  'dna.pillars': 0.76,
   'identity.colors': 0.89,
   'identity.typography': 0.83,
   'identity.dos': 0.78,
@@ -161,10 +191,122 @@ const CONFIDENCE_SCORES = {
 };
 
 const PILLAR_FIELDS = {
-  'Brand DNA': ['Mission', 'Vision', 'Target Audience', 'Competitors', 'Positioning'],
+  'Brand DNA': ['Mission', 'Vision', 'Target Audience', 'Competitors', 'Positioning', 'Brand Purpose', 'Brand Pillars'],
   'Brand Identity': ["Visual Do's", "Visual Don'ts"],
   'Brand Tonality': ['Key Phrases', 'Forbidden Words', 'Voice Tone', 'Tone Descriptors']
 };
+
+function ArchetypeWheel({ selected, onSelect, disabled }: { selected: string; onSelect: (name: string) => void; disabled?: boolean }) {
+  const WHEEL_SIZE = 520;
+  const CENTER = WHEEL_SIZE / 2;
+  const RADIUS = 195;
+
+  return (
+    <div className="relative mx-auto" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
+      {/* Center dark circle */}
+      <div
+        className="absolute rounded-full bg-neutral-950 border border-neutral-800/40"
+        style={{ width: 140, height: 140, left: CENTER - 70, top: CENTER - 70 }}
+      />
+
+      {/* Cross lines */}
+      <svg className="absolute inset-0 pointer-events-none" width={WHEEL_SIZE} height={WHEEL_SIZE}>
+        <line x1={CENTER} y1={60} x2={CENTER} y2={WHEEL_SIZE - 60} stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+        <line x1={60} y1={CENTER} x2={WHEEL_SIZE - 60} y2={CENTER} stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      </svg>
+
+      {/* Quadrant labels */}
+      {QUADRANT_LABELS.map((q) => (
+        <div
+          key={q.key}
+          className="absolute text-[9px] font-mono tracking-[0.2em] text-neutral-600 text-center uppercase leading-tight pointer-events-none"
+          style={{ left: `${q.x}%`, top: `${q.y}%`, transform: 'translate(-50%, -50%)' }}
+        >
+          {q.label.split('\n').map((line, i) => (
+            <div key={i}>{line}</div>
+          ))}
+        </div>
+      ))}
+
+      {/* Archetype nodes */}
+      {ARCHETYPE_WHEEL.map((arch) => {
+        const rad = (arch.angle - 90) * (Math.PI / 180);
+        const x = CENTER + RADIUS * Math.cos(rad);
+        const y = CENTER + RADIUS * Math.sin(rad);
+        const isSelected = selected === arch.name;
+        const colors = QUADRANT_COLORS[arch.quadrant];
+        const Icon = arch.icon;
+
+        return (
+          <button
+            key={arch.name}
+            disabled={disabled}
+            onClick={() => onSelect(arch.name)}
+            className={`absolute flex flex-col items-center group transition-all duration-300 ${isSelected ? 'z-20 scale-110' : 'z-10 hover:scale-105'}`}
+            style={{
+              left: x,
+              top: y,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            {/* Soft glow backdrop — selected only */}
+            {isSelected && (
+              <div
+                className="absolute rounded-full"
+                style={{
+                  width: 120,
+                  height: 120,
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -52%)',
+                  background: `radial-gradient(circle, ${colors.selected} 0%, ${colors.glow} 50%, transparent 75%)`,
+                  filter: 'blur(4px)',
+                }}
+              />
+            )}
+            {/* Filled background circle */}
+            <div
+              className="absolute rounded-full transition-all duration-300"
+              style={{
+                width: isSelected ? 90 : 60,
+                height: isSelected ? 90 : 60,
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -52%)',
+                background: isSelected
+                  ? 'rgba(64,64,64,0.85)'
+                  : 'rgba(38,38,38,0.5)',
+              }}
+            />
+            {/* Icon */}
+            <div
+              className="relative z-10 rounded-full flex items-center justify-center transition-all duration-300"
+              style={{ width: isSelected ? 44 : 32, height: isSelected ? 44 : 32 }}
+            >
+              <Icon size={isSelected ? 22 : 15} className={isSelected ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-200'} />
+            </div>
+            {/* Name */}
+            <span
+              className={`relative z-10 font-medium mt-1.5 whitespace-nowrap transition-all duration-300 ${
+                isSelected ? 'text-white text-[13px]' : 'text-neutral-400 text-[11px] group-hover:text-neutral-200'
+              }`}
+            >
+              {arch.name}
+            </span>
+            {/* Subtitle */}
+            <span
+              className={`relative z-10 italic whitespace-nowrap transition-all duration-300 ${
+                isSelected ? 'text-neutral-300 text-[10px]' : 'text-neutral-600 text-[9px] group-hover:text-neutral-500'
+              }`}
+            >
+              {arch.subtitle}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function App() {
   const [activeMenu, setActiveMenu] = useState('knowledge');
@@ -184,7 +326,7 @@ export default function App() {
 
   // Form Data
   const [formData, setFormData] = useState({
-    dna: { mission: '', vision: '', target: '', competitors: '', positioning: '' },
+    dna: { mission: '', vision: '', target: '', competitors: '', positioning: '', purpose: '', pillars: '' },
     identity: {
       colors: [
         { id: 1, label: 'Primary Color', hex: '#000000' },
@@ -226,6 +368,7 @@ export default function App() {
 
   // Knowledge Vault Viewer (V1.0)
   const [showVault, setShowVault] = useState(false);
+  const [dumpState, setDumpState] = useState<'idle' | 'processing' | 'done'>('idle');
   const [vaultChunks, setVaultChunks] = useState<VaultChunk[]>(MOCK_VAULT_CHUNKS);
   const [vaultSearch, setVaultSearch] = useState('');
   const [vaultActiveFilters, setVaultActiveFilters] = useState<string[]>(['All']);
@@ -292,6 +435,8 @@ export default function App() {
         'dna.target': 'ai_extracted',
         'dna.competitors': 'ai_extracted',
         'dna.positioning': 'ai_extracted',
+        'dna.purpose': 'ai_extracted',
+        'dna.pillars': 'ai_extracted',
         'identity.colors': 'ai_extracted',
         'identity.typography': 'ai_extracted',
         'identity.dos': 'ai_extracted',
@@ -329,6 +474,17 @@ export default function App() {
     handleSimulateDrop('url');
     setShowUrlInput(false);
     setUrlInput('');
+  };
+
+  // Document Dump — simulate file processing then populate vault with mock chunks
+  const handleDumpFile = () => {
+    setDumpState('processing');
+    const t1 = setTimeout(() => setDumpState('processing'), 100);
+    const t2 = setTimeout(() => {
+      setVaultChunks(MOCK_VAULT_CHUNKS);
+      setDumpState('done');
+    }, 3500);
+    parsingTimers.current = [t1, t2];
   };
 
   const toggleLock = (pillar: 'dna' | 'identity' | 'tonality') => {
@@ -560,12 +716,14 @@ export default function App() {
   // --- COVERAGE HELPERS ---
   const getDnaCoverage = () => {
     let filled = 0;
-    if (formData.dna.mission.trim()) filled++;
-    if (formData.dna.vision.trim()) filled++;
-    if (formData.dna.target.trim()) filled++;
-    if (formData.dna.competitors.trim()) filled++;
-    if (formData.dna.positioning.trim()) filled++;
-    return { filled, total: 5 };
+    if (formData.dna.mission?.trim()) filled++;
+    if (formData.dna.vision?.trim()) filled++;
+    if (formData.dna.target?.trim()) filled++;
+    if (formData.dna.competitors?.trim()) filled++;
+    if (formData.dna.positioning?.trim()) filled++;
+    if (formData.dna.purpose?.trim()) filled++;
+    if (formData.dna.pillars?.trim()) filled++;
+    return { filled, total: 7 };
   };
 
   const getIdentityCoverage = () => {
@@ -742,7 +900,8 @@ export default function App() {
                   {[
                     { id: 'dna', label: 'Brand DNA', locked: locks.dna },
                     { id: 'identity', label: 'Brand Identity', locked: locks.identity },
-                    { id: 'tonality', label: 'Brand Tonality', locked: locks.tonality }
+                    { id: 'tonality', label: 'Brand Tonality', locked: locks.tonality },
+                    { id: 'vault', label: 'Knowledge Vault', badge: vaultChunks.length }
                   ].map((pillar) => (
                     <button
                       key={pillar.id}
@@ -751,6 +910,9 @@ export default function App() {
                     >
                       <span>{pillar.label}</span>
                       {pillar.locked && <Lock size={10} className="text-neutral-600" />}
+                      {pillar.id === 'vault' && pillar.badge && (
+                        <span className="text-[10px] font-mono text-neutral-600">{pillar.badge}</span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -846,7 +1008,7 @@ export default function App() {
 
             {/* ==================== BRAND KNOWLEDGE: EMPTY STATE ==================== */}
             {activeMenu === 'knowledge' && ingestionState === 'empty' && (
-              <div className="max-w-2xl mx-auto mt-8 animate-in fade-in zoom-in duration-300">
+              <div className="max-w-xl mx-auto mt-8 animate-in fade-in zoom-in duration-300">
                 <div
                   onClick={() => handleSimulateDrop('pdf')}
                   onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -975,7 +1137,7 @@ export default function App() {
 
             {/* ==================== UNIFIED REVIEW SCREEN ==================== */}
             {activeMenu === 'knowledge' && ingestionState === 'review' && (
-              <div className="max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
+              <div className="max-w-3xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
 
                 {/* Extraction Success Banner */}
                 <div className="flex items-center gap-3 mb-6 bg-neutral-800/40 border border-neutral-800 text-neutral-300 p-3 rounded-lg text-sm font-light shadow-2xl">
@@ -1136,6 +1298,65 @@ export default function App() {
                               placeholder="e.g. Premium basics with architectural silhouettes at accessible price points."
                             />
                           </div>
+
+                        </div>
+
+                        {/* BRAND PURPOSE */}
+                        <div className={`rounded-xl border p-6 flex flex-col transition-colors ${getContainerStyle('dna.purpose')}`}>
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <label className="block text-[10px] font-mono tracking-widest text-neutral-500 uppercase">Brand Purpose</label>
+                              <p className="text-[10px] text-neutral-700 mt-1">The deeper "why" behind the brand — beyond profit</p>
+                            </div>
+                            <ProvenanceBadge fieldKey="dna.purpose" />
+                          </div>
+                          <textarea
+                            value={formData.dna.purpose ?? ''}
+                            onChange={(e) => handleFieldEdit('dna', 'purpose', e.target.value)}
+                            className="w-full flex-1 bg-transparent border-none outline-none text-sm font-light text-white placeholder-neutral-600 resize-none leading-relaxed"
+                            rows={2}
+                            placeholder="e.g. We exist to prove that design excellence should never be a privilege."
+                          />
+                        </div>
+
+                        {/* BRAND PILLARS */}
+                        <div className={`rounded-xl border p-6 transition-colors ${getContainerStyle('dna.pillars')}`}>
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <label className="block text-[10px] font-mono tracking-widest text-neutral-500 uppercase">Brand Pillars</label>
+                              <p className="text-[10px] text-neutral-700 mt-1">Core values that every piece of brand communication must reflect</p>
+                            </div>
+                            <ProvenanceBadge fieldKey="dna.pillars" />
+                          </div>
+                          <div className="min-h-[40px] flex flex-wrap gap-2 items-center">
+                            {formData.dna.pillars ? formData.dna.pillars.split(',').map((tag, i) => (
+                              <span key={i} className="bg-neutral-800/80 text-neutral-300 text-[10px] font-mono tracking-wide px-2 py-1 rounded border border-neutral-800 flex items-center gap-1.5">
+                                {tag.trim()}
+                                <button onClick={() => {
+                                  const tags = formData.dna.pillars!.split(',').filter((_, idx) => idx !== i);
+                                  handleFieldEdit('dna', 'pillars', tags.join(', '));
+                                }}><X size={12} /></button>
+                              </span>
+                            )) : null}
+                            <input
+                              type="text"
+                              className="bg-transparent border-none outline-none text-sm font-light text-white placeholder-neutral-600 min-w-[120px]"
+                              placeholder={formData.dna.pillars ? "" : "e.g. Design · Craftsmanship · Accessibility"}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ',') {
+                                  e.preventDefault();
+                                  const val = (e.target as HTMLInputElement).value.trim().replace(/,$/, '');
+                                  if (val) {
+                                    handleFieldEdit('dna', 'pillars', formData.dna.pillars ? `${formData.dna.pillars}, ${val}` : val);
+                                    (e.target as HTMLInputElement).value = '';
+                                  }
+                                }
+                              }}
+                            />
+                          </div>
+                          {!formData.dna.pillars && (
+                            <p className="text-[10px] text-neutral-700 mt-3">Press Enter or comma to add a pillar</p>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -1313,42 +1534,21 @@ export default function App() {
                     {!locks.tonality ? (
                       <div className="space-y-6 pt-2 border-t border-neutral-800/50 mt-4">
 
-                        {/* ARCHETYPE BUBBLE MAP */}
+                        {/* ARCHETYPE WHEEL */}
                         <div className={`rounded-xl border p-6 transition-colors ${getContainerStyle('tonality.archetype')}`}>
-                          <div className="flex items-center justify-between mb-5">
-                            <label className="block text-[10px] font-mono tracking-widest text-neutral-500 uppercase">Brand Archetype *</label>
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <label className="block text-sm font-medium text-white">Brand Archetype</label>
+                              <p className="text-xs text-neutral-500 mt-1">Select the archetype that best represents your brand's core identity</p>
+                            </div>
                             <ProvenanceBadge fieldKey="tonality.archetype" />
                           </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            {ARCHETYPE_QUADRANTS.map((quad) => (
-                              <div key={quad.label} className={`rounded-xl border ${quad.border} ${quad.bg} p-4`}>
-                                <div className="mb-3">
-                                  <span className={`text-[10px] font-mono tracking-widest uppercase font-semibold ${quad.color}`}>{quad.label}</span>
-                                  <span className="text-[10px] text-neutral-600 ml-2">{quad.sublabel}</span>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                  {quad.archetypes.map((arch) => {
-                                    const isSelected = formData.tonality.archetype === arch;
-                                    return (
-                                      <button
-                                        key={arch}
-                                        onClick={() => handleFieldEdit('tonality', 'archetype', arch)}
-                                        className={`px-3 py-1.5 rounded-full text-xs font-light border transition-all ${
-                                          isSelected
-                                            ? `${quad.selectedBg} text-white font-medium shadow-sm`
-                                            : `border-neutral-800/60 text-neutral-400 hover:text-white hover:border-neutral-600 bg-transparent`
-                                        }`}
-                                      >
-                                        {arch.replace('The ', '')}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                          <ArchetypeWheel
+                            selected={formData.tonality.archetype}
+                            onSelect={(arch) => handleFieldEdit('tonality', 'archetype', arch)}
+                          />
                           {formData.tonality.archetype && (
-                            <p className="mt-4 text-[10px] text-neutral-500 font-mono">
+                            <p className="mt-2 text-[10px] text-neutral-500 font-mono text-center">
                               Selected: <span className="text-white">{formData.tonality.archetype}</span>
                             </p>
                           )}
@@ -1542,7 +1742,7 @@ export default function App() {
 
             {/* ==================== POPULATED / ACTIVATED STATE ==================== */}
             {activeMenu === 'knowledge' && (ingestionState === 'populated' || ingestionState === 'draft') && (
-              <div className="max-w-2xl mx-auto animate-in fade-in duration-300">
+              <div className="max-w-xl mx-auto animate-in fade-in duration-300">
 
                 {/* Source File Card */}
                 <div className="bg-neutral-800/40 border border-neutral-800 rounded-xl p-6 mb-6">
@@ -1730,49 +1930,52 @@ export default function App() {
                                       </div>
                                     </div>
                                   ) : (
-                                    <p
-                                      onClick={() => setExpandedChunkId(expandedChunkId === chunk.id ? null : chunk.id)}
-                                      className={`text-sm font-light text-neutral-400 leading-relaxed cursor-pointer ${expandedChunkId === chunk.id ? '' : 'line-clamp-3'}`}
-                                    >
-                                      {chunk.text}
-                                    </p>
+                                    <>
+                                      {chunk.type === 'file' && (
+                                        <div className="mb-4 mt-2 overflow-hidden rounded-xl border border-neutral-700 bg-neutral-950 shadow-lg">
+                                          <div className="h-24 bg-neutral-900 relative flex items-center justify-center p-4 group">
+                                            <div className="absolute top-3 right-3 bg-black/60 backdrop-blur border border-white/10 px-2 py-1 rounded text-[9px] font-mono tracking-widest text-white uppercase z-10 opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md">
+                                              FILE PREVIEW
+                                            </div>
+                                            {chunk.fileType?.includes('image') ? (
+                                              <div className="w-full h-full flex items-center justify-center bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMWExYTFhIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMyMjIyMjIiPjwvcmVjdD4KPHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjQiIGhlaWdodD0iNCIgZmlsbD0iIzIyMjIyMiI+PC9yZWN0Pgo8L3N2Zz4=')] rounded">
+                                                <img src={chunk.fileUrl || ''} alt={chunk.fileName || ''} className="h-full w-auto max-w-full object-contain drop-shadow-xl" />
+                                              </div>
+                                            ) : (
+                                              <div className="flex flex-col items-center justify-center text-neutral-600 gap-2">
+                                                <FileText size={48} className="text-neutral-500" />
+                                                <span className="text-xs font-medium">Document Preview</span>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className="flex items-center justify-between p-3 border-t border-neutral-800/50 bg-neutral-900/60">
+                                            <div className="min-w-0">
+                                              <p className="text-sm font-medium text-white truncate">{chunk.fileName}</p>
+                                              <p className="text-[10px] text-neutral-400 font-mono mt-0.5 uppercase flex items-center gap-2">
+                                                <span className="px-1.5 py-0.5 bg-neutral-800 rounded">{chunk.fileType === 'image/svg+xml' ? 'SVG' : chunk.fileType?.split('/')[1] || 'FILE'}</span>
+                                                <span>{(Math.random() * 5 + 0.1).toFixed(1)} MB</span>
+                                              </p>
+                                            </div>
+                                            <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center shrink-0 cursor-pointer hover:bg-neutral-700 transition-colors">
+                                              <FileUp size={14} className="text-neutral-300" />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+                                      <p
+                                        onClick={() => setExpandedChunkId(expandedChunkId === chunk.id ? null : chunk.id)}
+                                        className={`text-sm font-light text-neutral-400 leading-relaxed cursor-pointer ${expandedChunkId === chunk.id ? '' : 'line-clamp-3'} ${chunk.type === 'file' ? 'border-l-2 border-neutral-600 pl-3 italic mt-1' : ''}`}
+                                      >
+                                        {chunk.text}
+                                      </p>
+                                    </>
                                   )}
 
                                   {/* Chunk actions */}
                                   {editingChunkId !== chunk.id && (
                                     <div className="flex items-center gap-4 mt-3">
-                                      {/* Promote */}
-                                      <div className="relative">
-                                        <button
-                                          onClick={() => setShowPromoteDropdown(showPromoteDropdown === chunk.id ? null : chunk.id)}
-                                          className="flex items-center gap-1 text-[10px] text-neutral-600 hover:text-neutral-400 transition-colors"
-                                        >
-                                          <Sparkles size={10} /> Promote
-                                        </button>
-                                        {showPromoteDropdown === chunk.id && (
-                                          <div className="absolute bottom-full left-0 mb-1 bg-neutral-800/40 border border-neutral-800 rounded-lg shadow-2xl py-1 z-20 min-w-[200px]">
-                                            {Object.entries(PILLAR_FIELDS).map(([pillar, fields]) => (
-                                              <div key={pillar}>
-                                                <div className="px-3 py-1.5 text-[10px] font-mono tracking-widest text-neutral-600 uppercase">{pillar}</div>
-                                                {fields.map((field) => (
-                                                  <button
-                                                    key={field}
-                                                    onClick={() => promoteChunk(chunk.id, pillar, field)}
-                                                    className="w-full text-left px-3 py-1.5 text-xs text-neutral-400 hover:text-white hover:bg-neutral-900/50 transition-colors"
-                                                  >
-                                                    {field}
-                                                  </button>
-                                                ))}
-                                              </div>
-                                            ))}
-                                          </div>
-                                        )}
-                                      </div>
                                       <button onClick={() => startEditChunk(chunk.id)} className="flex items-center gap-1 text-[10px] text-neutral-600 hover:text-white transition-colors">
                                         <Edit3 size={10} /> Edit
-                                      </button>
-                                      <button onClick={() => togglePinChunk(chunk.id)} className="flex items-center gap-1 text-[10px] text-neutral-600 hover:text-neutral-400 transition-colors">
-                                        <Star size={10} className={chunk.pinned ? 'fill-neutral-500 text-neutral-500' : ''} /> {chunk.pinned ? 'Unpin' : 'Pin'}
                                       </button>
                                       <button onClick={() => deleteChunk(chunk.id)} className="flex items-center gap-1 text-[10px] text-neutral-600 hover:text-red-400 transition-colors">
                                         <Trash2 size={10} /> Delete
@@ -1791,47 +1994,288 @@ export default function App() {
               </div>
             )}
 
+            {/* ==================== KNOWLEDGE VAULT — DEDICATED PAGE ==================== */}
+            {activeMenu === 'vault' && (
+              <div className="max-w-5xl mx-auto animate-in fade-in duration-300 space-y-6">
+
+                {/* Header Stats */}
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-neutral-900/20 border border-neutral-800 rounded-lg flex items-center justify-center">
+                      <Folder size={18} className="text-neutral-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-medium text-white">Knowledge Vault</h2>
+                      <p className="text-xs text-neutral-500">
+                        {vaultChunks.length} insights &middot; {mappedCount} mapped, {unmappedCount} unmapped
+                      </p>
+                    </div>
+                  </div>
+                  <div className="ml-auto flex items-center gap-3">
+                    <button
+                      onClick={() => setShowVault(!showVault)}
+                      className="px-3 py-1.5 rounded-lg bg-neutral-800 text-neutral-300 text-xs hover:bg-neutral-700 hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <Upload size={12} /> Dump Document
+                    </button>
+                  </div>
+                </div>
+
+                {/* File Dump Area */}
+                {showVault && dumpState === 'idle' && (
+                  <div
+                    onClick={handleDumpFile}
+                    className="border border-dashed border-neutral-800/60 bg-neutral-900/20 rounded-xl p-8 text-center hover:border-neutral-700 hover:bg-neutral-950/60 transition-colors cursor-pointer group mb-4">
+                    <div className="w-10 h-10 bg-neutral-800/40 border border-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:-translate-y-1 transition-transform">
+                      <Upload size={18} className="text-neutral-400" />
+                    </div>
+                    <h3 className="text-sm font-medium text-white mb-1">Dump any brand document here</h3>
+                    <p className="text-xs font-light text-neutral-500 mb-4 max-w-sm mx-auto">
+                      Upload reports, financial statements, annual reports, or any reference document. We'll extract the insights and store them alongside your brand knowledge.
+                    </p>
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <span className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase">PDF</span>
+                      <span className="text-neutral-800">|</span>
+                      <span className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase">PPTX</span>
+                      <span className="text-neutral-800">|</span>
+                      <span className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase">DOCX</span>
+                      <span className="text-neutral-800">|</span>
+                      <span className="text-[10px] font-mono tracking-widest text-neutral-600 uppercase">50MB max</span>
+                    </div>
+                    <p className="text-[10px] text-neutral-600">File is stored as-is AND processed into searchable insights</p>
+                  </div>
+                )}
+
+                {/* Processing State */}
+                {dumpState === 'processing' && (
+                  <div className="border border-dashed border-neutral-700/60 bg-neutral-900/20 rounded-xl p-8 mb-4">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-10 h-10 bg-neutral-800/40 border border-neutral-800 rounded-full flex items-center justify-center shrink-0">
+                        <div className="w-5 h-5 border-2 border-neutral-500 border-t-white rounded-full animate-spin" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-white mb-1">Processing Annual Report 2025.pdf...</h3>
+                        <p className="text-xs text-neutral-500">Storing file & extracting insights simultaneously</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {[
+                        { step: 'Storing file', status: 'done' },
+                        { step: 'Parsing document structure', status: 'active' },
+                        { step: 'Extracting semantic chunks', status: 'pending' },
+                        { step: 'Organizing into Knowledge Vault', status: 'pending' }
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          {item.status === 'done' ? (
+                            <CheckCircle2 size={14} className="text-neutral-500 shrink-0" />
+                          ) : item.status === 'active' ? (
+                            <div className="w-3.5 h-3.5 border-2 border-neutral-400 border-t-white/40 rounded-full animate-spin shrink-0" />
+                          ) : (
+                            <div className="w-3.5 h-3.5 rounded-full border border-neutral-800 shrink-0" />
+                          )}
+                          <span className={`text-xs ${item.status === 'active' ? 'text-neutral-300' : item.status === 'done' ? 'text-neutral-500' : 'text-neutral-600'}`}>{item.step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Dump Done Banner */}
+                {dumpState === 'done' && (
+                  <div className="flex items-center gap-3 p-3 mb-4 bg-neutral-900/40 border border-neutral-800/50 rounded-xl">
+                    <CheckCircle2 size={14} className="text-neutral-400 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs font-medium text-white">Annual Report 2025.pdf</span>
+                      <span className="text-[10px] text-neutral-500 ml-2">12 insights extracted & stored</span>
+                    </div>
+                    <button
+                      onClick={() => { setDumpState('idle'); setVaultChunks([]); }}
+                      className="text-[10px] text-neutral-600 hover:text-white transition-colors"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+
+                {/* Always show vault search & chunk list when there are chunks */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 flex items-center bg-neutral-900/20 border border-neutral-800/50 rounded-lg px-4 py-2.5 focus-within:border-neutral-700 transition-colors">
+                    <Search size={14} className="text-neutral-600 mr-3 shrink-0" />
+                    <input
+                      value={vaultSearch}
+                      onChange={(e) => setVaultSearch(e.target.value)}
+                      className="w-full bg-transparent border-none outline-none text-sm font-light text-white placeholder-neutral-600"
+                      placeholder="Search brand knowledge (e.g., 'rules about humor', 'logo clearspace')"
+                    />
+                    {vaultSearch && (
+                      <button onClick={() => setVaultSearch('')} className="text-neutral-600 hover:text-white transition-colors"><X size={14} /></button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Cluster Filter Chips */}
+                <div className="flex flex-wrap gap-2">
+                  {['All', 'Mapped', 'Unmapped', ...getVaultClusterLabels()].map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => toggleVaultFilter(filter)}
+                      className={`px-3 py-1 rounded-full text-[10px] font-mono tracking-wide transition-colors border ${
+                        vaultActiveFilters.includes(filter)
+                          ? 'bg-white/10 text-white border-white/20'
+                          : 'bg-transparent text-neutral-500 border-neutral-800 hover:text-neutral-300 hover:border-neutral-700'
+                      }`}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Add Note */}
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-neutral-600">{getFilteredVaultChunks().length} results</span>
+                  <button
+                    onClick={() => setShowAddNote(!showAddNote)}
+                    className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
+                  >
+                    <StickyNote size={12} /> Add Note
+                  </button>
+                </div>
+
+                {showAddNote && (
+                  <div className="bg-neutral-900/20 border border-neutral-800/50 rounded-xl p-4">
+                    <textarea
+                      value={newNote}
+                      onChange={(e) => setNewNote(e.target.value)}
+                      className="w-full bg-transparent border-none outline-none text-sm font-light text-white placeholder-neutral-600 resize-none focus:border-neutral-700 transition-colors"
+                      placeholder="Add a manual note (meeting notes, client call notes, ad hoc context)..."
+                      rows={3}
+                    />
+                    <div className="flex justify-end gap-2 mt-2">
+                      <button onClick={() => { setShowAddNote(false); setNewNote(''); }} className="px-3 py-1.5 rounded-lg bg-neutral-800 text-neutral-400 text-xs hover:bg-neutral-700 transition-colors">Cancel</button>
+                      <button onClick={addManualNote} disabled={!newNote.trim()} className="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-medium hover:bg-neutral-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Save Note</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Chunk List */}
+                <div className="space-y-2">
+                  {getFilteredVaultChunks().length === 0 ? (
+                    <div className="p-12 text-center border border-neutral-800/40 rounded-xl">
+                      <span className="text-sm text-neutral-600">No matching insights found.</span>
+                    </div>
+                  ) : (
+                    getFilteredVaultChunks().map((chunk) => (
+                      <div key={chunk.id} className={`rounded-xl border p-4 hover:bg-neutral-900/30 transition-colors ${chunk.pinned ? 'bg-neutral-800/40 border-neutral-800/50' : 'bg-neutral-900/10 border-neutral-800/40'}`}>
+                        <div className="flex items-start gap-3">
+                          {chunk.pinned && <Star size={12} className="text-neutral-500 mt-1 shrink-0 fill-neutral-500" />}
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <span className={`text-[10px] font-mono tracking-wide px-1.5 py-0.5 rounded border ${getLabelColor(chunk.label)}`}>
+                                {chunk.label}
+                              </span>
+                              {chunk.mapped && chunk.pillar && chunk.field && (
+                                <span className="flex items-center gap-1 text-[10px] text-neutral-600">
+                                  <CornerDownRight size={10} /> {chunk.pillar} &rarr; {chunk.field}
+                                </span>
+                              )}
+                              <span className="text-[10px] text-neutral-700 ml-auto shrink-0">
+                                {chunk.source}{chunk.page ? `, p.${chunk.page}` : ''}
+                              </span>
+                            </div>
+
+                            {editingChunkId === chunk.id ? (
+                              <div>
+                                <textarea
+                                  value={editingChunkText}
+                                  onChange={(e) => setEditingChunkText(e.target.value)}
+                                  className="w-full bg-neutral-900/20 border border-neutral-800/50 rounded-lg px-3 py-2 text-sm font-light text-white outline-none resize-none focus:border-neutral-700 transition-colors"
+                                  rows={3}
+                                />
+                                <div className="flex gap-2 mt-2">
+                                  <button onClick={() => setEditingChunkId(null)} className="px-2 py-1 text-[10px] text-neutral-500 hover:text-white transition-colors">Cancel</button>
+                                  <button onClick={saveEditChunk} className="px-2 py-1 text-[10px] text-white bg-neutral-800 rounded hover:bg-neutral-700 transition-colors">Save</button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                {chunk.type === 'file' && (
+                                  <div className="mb-4 mt-2 overflow-hidden rounded-xl border border-neutral-700 bg-neutral-950 shadow-lg">
+                                    <div className="h-24 bg-neutral-900 relative flex items-center justify-center p-4 group">
+                                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur border border-white/10 px-2 py-1 rounded text-[9px] font-mono tracking-widest text-white uppercase z-10 opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md">
+                                        FILE PREVIEW
+                                      </div>
+                                      {chunk.fileType?.includes('image') ? (
+                                        <div className="w-full h-full flex items-center justify-center bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMWExYTFhIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMyMjIyMjIiPjwvcmVjdD4KPHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjQiIGhlaWdodD0iNCIgZmlsbD0iIzIyMjIyMiI+PC9yZWN0Pgo8L3N2Zz4=')] rounded">
+                                          <img src={chunk.fileUrl || ''} alt={chunk.fileName || ''} className="h-full w-auto max-w-full object-contain drop-shadow-xl" />
+                                        </div>
+                                      ) : (
+                                        <div className="flex flex-col items-center justify-center text-neutral-600 gap-2">
+                                          <FileText size={48} className="text-neutral-500" />
+                                          <span className="text-xs font-medium">Document Preview</span>
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 border-t border-neutral-800/50 bg-neutral-900/60">
+                                      <div className="min-w-0">
+                                        <p className="text-sm font-medium text-white truncate">{chunk.fileName}</p>
+                                        <p className="text-[10px] text-neutral-400 font-mono mt-0.5 uppercase flex items-center gap-2">
+                                          <span className="px-1.5 py-0.5 bg-neutral-800 rounded">{chunk.fileType === 'image/svg+xml' ? 'SVG' : chunk.fileType?.split('/')[1] || 'FILE'}</span>
+                                          <span>{(Math.random() * 5 + 0.1).toFixed(1)} MB</span>
+                                        </p>
+                                      </div>
+                                      <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center shrink-0 cursor-pointer hover:bg-neutral-700 transition-colors">
+                                        <FileUp size={14} className="text-neutral-300" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                <p
+                                  onClick={() => setExpandedChunkId(expandedChunkId === chunk.id ? null : chunk.id)}
+                                  className={`text-sm font-light text-neutral-400 leading-relaxed cursor-pointer ${expandedChunkId === chunk.id ? '' : 'line-clamp-3'} ${chunk.type === 'file' ? 'border-l-2 border-neutral-600 pl-3 italic mt-1' : ''}`}
+                                >
+                                  {chunk.text}
+                                </p>
+                              </>
+                            )}
+
+                            {editingChunkId !== chunk.id && (
+                              <div className="flex items-center gap-4 mt-3">
+                                <button onClick={() => startEditChunk(chunk.id)} className="flex items-center gap-1 text-[10px] text-neutral-600 hover:text-white transition-colors">
+                                  <Edit3 size={10} /> Edit
+                                </button>
+                                <button onClick={() => deleteChunk(chunk.id)} className="flex items-center gap-1 text-[10px] text-neutral-600 hover:text-red-400 transition-colors">
+                                  <Trash2 size={10} /> Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+            </div>
+            )}
+
             {/* ==================== MANUAL SETUP VIEWS ==================== */}
 
             {activeMenu === 'tonality' && ingestionState !== 'review' && (
               <div className="max-w-4xl mx-auto animate-in fade-in duration-300 space-y-6">
 
-                {/* ARCHETYPE BUBBLE MAP */}
+                {/* ARCHETYPE WHEEL */}
                 <div className="rounded-xl border border-neutral-800/60 bg-neutral-900/20 p-6 transition-colors">
-                  <div className="mb-5">
-                    <label className="block text-[10px] font-mono tracking-widest text-neutral-500 uppercase mb-1">Brand Archetype *</label>
-                    <p className="text-xs text-neutral-600">Select the psychological profile that best represents this brand.</p>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-white">Brand Archetype</label>
+                    <p className="text-xs text-neutral-500 mt-1">Select the archetype that best represents your brand's core identity</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    {ARCHETYPE_QUADRANTS.map((quad) => (
-                      <div key={quad.label} className={`rounded-xl border ${quad.border} ${quad.bg} p-4`}>
-                        <div className="mb-3">
-                          <span className={`text-[10px] font-mono tracking-widest uppercase font-semibold ${quad.color}`}>{quad.label}</span>
-                          <span className="text-[10px] text-neutral-600 ml-2">{quad.sublabel}</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {quad.archetypes.map((arch) => {
-                            const isSelected = formData.tonality.archetype === arch;
-                            return (
-                              <button
-                                key={arch}
-                                onClick={() => handleFieldEdit('tonality', 'archetype', arch)}
-                                className={`px-3 py-1.5 rounded-full text-xs font-light border transition-all ${
-                                  isSelected
-                                    ? `${quad.selectedBg} text-white font-medium shadow-sm`
-                                    : `border-neutral-800/60 text-neutral-400 hover:text-white hover:border-neutral-600 bg-transparent`
-                                }`}
-                              >
-                                {arch.replace('The ', '')}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <ArchetypeWheel
+                    selected={formData.tonality.archetype}
+                    onSelect={(arch) => handleFieldEdit('tonality', 'archetype', arch)}
+                  />
                   {formData.tonality.archetype && (
-                    <p className="mt-4 text-[10px] text-neutral-500 font-mono">
+                    <p className="mt-2 text-[10px] text-neutral-500 font-mono text-center">
                       Selected: <span className="text-white">{formData.tonality.archetype}</span>
                     </p>
                   )}
@@ -2076,6 +2520,59 @@ export default function App() {
                     <textarea value={formData.dna.positioning} onChange={(e) => handleFieldEdit('dna', 'positioning', e.target.value)} className="w-full flex-1 bg-transparent border-none outline-none text-sm font-light text-white resize-none leading-relaxed" />
                   </div>
                 </div>
+
+                {/* BRAND PURPOSE */}
+                <div className="rounded-xl border border-neutral-800/60 bg-neutral-900/20 p-6 flex flex-col transition-colors">
+                  <div className="mb-4">
+                    <label className="block text-[10px] font-mono tracking-widest text-neutral-500 uppercase mb-1">Brand Purpose</label>
+                    <p className="text-xs text-neutral-500">The deeper "why" behind the brand — beyond profit</p>
+                  </div>
+                  <textarea
+                    value={formData.dna.purpose}
+                    onChange={(e) => handleFieldEdit('dna', 'purpose', e.target.value)}
+                    className="w-full flex-1 bg-transparent border-none outline-none text-sm font-light text-white resize-none leading-relaxed"
+                    rows={3}
+                    placeholder="e.g. We exist to prove that design excellence should never be a privilege."
+                  />
+                </div>
+
+                {/* BRAND PILLARS */}
+                <div className="rounded-xl border border-neutral-800/60 bg-neutral-900/20 p-6 transition-colors">
+                  <div className="mb-4">
+                    <label className="block text-[10px] font-mono tracking-widest text-neutral-500 uppercase mb-1">Brand Pillars</label>
+                    <p className="text-xs text-neutral-500">Core values that every piece of brand communication must reflect</p>
+                  </div>
+                  <div className="min-h-[40px] flex flex-wrap gap-2 items-center">
+                    {formData.dna.pillars ? formData.dna.pillars.split(',').map((tag, i) => (
+                      <span key={i} className="bg-neutral-950 text-neutral-300 text-[10px] font-mono tracking-wide px-2 py-1 rounded border border-neutral-800 flex items-center gap-1.5">
+                        {tag.trim()}
+                        <button onClick={() => {
+                          const tags = formData.dna.pillars!.split(',').filter((_, idx) => idx !== i);
+                          handleFieldEdit('dna', 'pillars', tags.join(', '));
+                        }}><X size={12} /></button>
+                      </span>
+                    )) : null}
+                    <input
+                      type="text"
+                      className="bg-transparent border-none outline-none text-sm font-light text-white placeholder-neutral-600 min-w-[120px]"
+                      placeholder={formData.dna.pillars ? "" : "e.g. Design · Craftsmanship · Accessibility"}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ',') {
+                          e.preventDefault();
+                          const val = (e.target as HTMLInputElement).value.trim().replace(/,$/, '');
+                          if (val) {
+                            handleFieldEdit('dna', 'pillars', formData.dna.pillars ? `${formData.dna.pillars}, ${val}` : val);
+                            (e.target as HTMLInputElement).value = '';
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                  {!formData.dna.pillars && (
+                    <p className="text-[10px] text-neutral-700 mt-3">Press Enter or comma to add a pillar</p>
+                  )}
+                </div>
+
               </div>
             )}
 
@@ -2121,4 +2618,4 @@ export default function App() {
       </div>
     </div>
   );
-}
+  }
