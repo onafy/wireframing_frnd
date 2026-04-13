@@ -162,13 +162,6 @@ const QUADRANT_COLORS: Record<string, { glow: string; selected: string }> = {
   'connected-to-others': { glow: 'rgba(244,114,182,0.15)', selected: 'rgba(244,114,182,0.35)' },
 };
 
-// Keep legacy reference for any other usage
-const ARCHETYPE_QUADRANTS = [
-  { label: 'Freedom', sublabel: 'Yearn to explore', color: 'text-sky-400', border: 'border-sky-400/20', bg: 'bg-sky-400/5', selectedBg: 'bg-sky-400/20 border-sky-400/50', archetypes: ['The Innocent', 'The Explorer', 'The Sage'] },
-  { label: 'Ego', sublabel: 'Leave a mark', color: 'text-orange-400', border: 'border-orange-400/20', bg: 'bg-orange-400/5', selectedBg: 'bg-orange-400/20 border-orange-400/50', archetypes: ['The Hero', 'The Outlaw', 'The Magician'] },
-  { label: 'Social', sublabel: 'Connect & belong', color: 'text-rose-400', border: 'border-rose-400/20', bg: 'bg-rose-400/5', selectedBg: 'bg-rose-400/20 border-rose-400/50', archetypes: ['The Regular Guy', 'The Lover', 'The Jester'] },
-  { label: 'Order', sublabel: 'Provide structure', color: 'text-emerald-400', border: 'border-emerald-400/20', bg: 'bg-emerald-400/5', selectedBg: 'bg-emerald-400/20 border-emerald-400/50', archetypes: ['The Caregiver', 'The Creator', 'The Ruler'] },
-];
 
 const CONFIDENCE_SCORES = {
   'dna.mission': 0.91,
@@ -190,11 +183,6 @@ const CONFIDENCE_SCORES = {
   'tonality.toneDescriptors': 0.71
 };
 
-const PILLAR_FIELDS = {
-  'Brand DNA': ['Mission', 'Vision', 'Target Audience', 'Competitors', 'Positioning', 'Brand Purpose', 'Brand Pillars'],
-  'Brand Identity': ["Visual Do's", "Visual Don'ts"],
-  'Brand Tonality': ['Key Phrases', 'Forbidden Words', 'Voice Tone', 'Tone Descriptors']
-};
 
 function ArchetypeWheel({ selected, onSelect, disabled }: { selected: string; onSelect: (name: string) => void; disabled?: boolean }) {
   const WHEEL_SIZE = 520;
@@ -377,7 +365,7 @@ export default function App() {
   const [showAddNote, setShowAddNote] = useState(false);
   const [newNote, setNewNote] = useState('');
   const [deletedChunk, setDeletedChunk] = useState<{ chunk: VaultChunk; index: number } | null>(null);
-  const [showPromoteDropdown, setShowPromoteDropdown] = useState<string | null>(null);
+
   const [expandedChunkId, setExpandedChunkId] = useState<string | null>(null);
 
   // Parsing cancel ref
@@ -652,9 +640,6 @@ export default function App() {
     return chunks;
   };
 
-  const togglePinChunk = (id: string) => {
-    setVaultChunks(prev => prev.map(c => c.id === id ? { ...c, pinned: !c.pinned } : c));
-  };
 
   const deleteChunk = (id: string) => {
     const idx = vaultChunks.findIndex(c => c.id === id);
@@ -708,10 +693,6 @@ export default function App() {
     setShowAddNote(false);
   };
 
-  const promoteChunk = (chunkId: string, pillar: string, field: string) => {
-    setVaultChunks(prev => prev.map(c => c.id === chunkId ? { ...c, mapped: true, pillar, field } : c));
-    setShowPromoteDropdown(null);
-  };
 
   // --- COVERAGE HELPERS ---
   const getDnaCoverage = () => {
