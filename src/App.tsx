@@ -9,6 +9,7 @@ import StudioPage from './pages/studio/StudioPage'
 import AskFrndPage from './pages/Askfrnd/askfrnd2'
 import BrandKnowledgePage from './pages/Brand Knowledge/BrandKnowkedge'
 import BrandAssetsPage from './pages/Brand Knowledge/BrandAssets'
+import TalentsPage from './pages/Brand Knowledge/Talents'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/askfrnd" element={<AskFrndPage />} />
         <Route path="/brand-knowledge" element={<BrandKnowledgePage />} />
         <Route path="/brand-assets" element={<BrandAssetsPage />} />
+        <Route path="/talents" element={<TalentsPage />} />
       </Routes>
       <RouteOverlays />
       {import.meta.env.DEV ? <Agentation endpoint="http://localhost:4747" /> : null}

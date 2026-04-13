@@ -77,6 +77,18 @@ export const wireframeRegistry: WireframeEntry[] = [
     sourcePaths: ['src/pages/brand-knowledge/brand-assets.tsx'],
     prdPath: undefined,
   },
+  {
+    id: 'talents',
+    title: 'Talents',
+    route: '/talents',
+    module: 'Core',
+    description: 'AI Talents — face-consistent reference library for brand ambassadors',
+    status: 'done',
+    owner: 'Novi',
+    icon: 'layers',
+    sourcePaths: ['src/pages/Brand Knowledge/Talents.tsx'],
+    prdPath: 'output/brand-knowledge/talents-prd.md',
+  },
 
 ]
 
