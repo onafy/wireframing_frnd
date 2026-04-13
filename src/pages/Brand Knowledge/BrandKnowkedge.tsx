@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import BrandSidebar from '@/components/BrandSidebar/BrandSidebar';
 import {
   Settings,
   Folder,
@@ -10,8 +11,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Wand2,
-  ChevronDown,
-  ChevronRight,
   Trash2,
   MessageSquare,
   RefreshCw,
@@ -40,6 +39,7 @@ import {
   Compass,
   Landmark,
   Users,
+  ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -850,62 +850,30 @@ export default function App() {
         </button>
 
         {/* SIDEBAR */}
-        <div className="w-64 border-r border-neutral-800/40 flex flex-col p-4 shrink-0">
-          <h2 className="text-white text-lg font-medium mb-6 px-2 mt-2">Brand Settings</h2>
-
-          <div className="space-y-1">
-            <button
-              onClick={() => safeNavigate('general')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-light transition-colors ${activeMenu === 'general' ? 'bg-neutral-900/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/30'}`}
-            >
-              <Settings size={16} /> General
-            </button>
-
-            {/* BRAND KNOWLEDGE PARENT */}
-            <div className="pt-2">
-              <button
-                onClick={() => {
-                  safeNavigate('knowledge');
-                  setKnowledgeExpanded(!knowledgeExpanded);
-                }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-light transition-colors ${activeMenu === 'knowledge' ? 'bg-neutral-900/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/30'}`}
-              >
-                <div className="flex items-center gap-3">
-                  <Folder size={16} /> Brand Knowledge
-                </div>
-                {knowledgeExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </button>
-
-              {knowledgeExpanded && (
-                <div className="ml-5 mt-1 border-l border-neutral-800/50 flex flex-col pl-2 space-y-1">
-                  {[
+        <BrandSidebar
+          sections={[
+            {
+              items: [
+                { id: 'general', label: 'General', icon: Settings },
+                {
+                  id: 'knowledge',
+                  label: 'Brand Knowledge',
+                  icon: Folder,
+                  children: [
                     { id: 'dna', label: 'Brand DNA', locked: locks.dna },
                     { id: 'identity', label: 'Brand Identity', locked: locks.identity },
                     { id: 'tonality', label: 'Brand Tonality', locked: locks.tonality },
-                    { id: 'vault', label: 'Knowledge Vault', badge: vaultChunks.length }
-                  ].map((pillar) => (
-                    <button
-                      key={pillar.id}
-                      onClick={() => safeNavigate(pillar.id)}
-                      className={`text-left px-3 py-1.5 rounded-md text-sm font-light transition-colors flex items-center justify-between ${activeMenu === pillar.id ? 'bg-neutral-900/50 text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
-                    >
-                      <span>{pillar.label}</span>
-                      {pillar.locked && <Lock size={10} className="text-neutral-600" />}
-                      {pillar.id === 'vault' && pillar.badge && (
-                        <span className="text-[10px] font-mono text-neutral-600">{pillar.badge}</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* SIDEBAR FOOTER */}
-          <div className="mt-auto pt-4 border-t border-neutral-800/30">
-            <span className="text-[10px] text-neutral-700 font-mono tracking-widest px-2">frndOS v4.2</span>
-          </div>
-        </div>
+                    { id: 'vault', label: 'Knowledge Vault', badge: vaultChunks.length },
+                  ],
+                },
+              ],
+            },
+          ]}
+          activeMenu={activeMenu}
+          onNavigate={safeNavigate}
+          parentExpanded={knowledgeExpanded}
+          onParentToggle={() => setKnowledgeExpanded(v => !v)}
+        />
 
         {/* MAIN CONTENT AREA */}
         <div className="flex-1 bg-black flex flex-col relative overflow-hidden">
